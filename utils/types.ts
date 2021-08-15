@@ -1,8 +1,26 @@
 export interface UserObj {
     email: string,
-    username: string,
     name: string,
     image: string,
+    grade: number,
+    school: string,
+    labels?: string[],
+    previousEvents?: string[],
+    preferredEvents?: string[],
+    notWantedEvents?: string[],
+}
+
+export interface EventObj {
+    name: string; 
+    description: string; 
+    labels?: string[]; // "individual" | "team" | ...
+    image?: string; 
+}
+
+export interface SchoolObj {
+    name: string; 
+    admin: string[]; 
+    description?: string; 
 }
 
 export interface SessionObj {

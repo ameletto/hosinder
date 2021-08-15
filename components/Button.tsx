@@ -1,5 +1,5 @@
-import {ReactNode} from "react";
 import Link from "next/link";
+import { ReactNode } from "react";
 
 interface ButtonPropsBase {
     children: ReactNode,
@@ -20,7 +20,7 @@ interface ButtonPropsButton extends ButtonPropsBase {
 type ButtonProps = ButtonPropsLink | ButtonPropsButton;
 
 export default function Button({children, href, onClick, className, disabled}: ButtonProps) {
-    const classNames = " " + className;
+    const classNames = "disabled:opacity-25 disabled:cursor-not-allowed" + className;
 
     return href ? (
         <Link href={href}>

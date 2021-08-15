@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+.primary {
+    color: "#B7E1FC";
+}
+
+.bg-scribble-hover:hover {
+    background-image: url("/scribble.png");
+    background-size: contain;
+}
+
 .up-spinner {
     position: absolute;
     top: calc(50% - 0.5rem);

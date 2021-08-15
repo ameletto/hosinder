@@ -1,7 +1,7 @@
 module.exports = {
     purge: [
-        './**/*.html',
-        './**/*.tsx',
+        "./**/*.html",
+        "./**/*.tsx",
     ],
     theme: {
         container: {
@@ -9,6 +9,11 @@ module.exports = {
             padding: "1rem",
         },
     },
-    variants: {},
+    variants: {
+        extend: {
+            opacity: ["disabled"],
+            cursor: ["disabled"],
+        },
+    },
     plugins: [],
 }

@@ -1,25 +1,33 @@
-import {GetServerSideProps} from "next";
-import {getSession, signIn, useSession} from "next-auth/client";
 import axios from "axios";
-import {useRouter} from "next/router";
-import {useState} from "react";
-import SEO from "../../components/SEO";
+import { GetServerSideProps } from "next";
+import { getSession, signIn, useSession } from "next-auth/client";
+import { useRouter } from "next/router";
+import { useState } from "react";
 import Skeleton from "react-loading-skeleton";
-import SpinnerButton from "../../components/SpinnerButton";
-import {UserModel} from "../../models/User";
+import Button from "../../components/Button";
+import CreateSchoolModal from "../../components/CreateSchoolModal";
+import HandwrittenButton from "../../components/HandwrittenButton";
+import SEO from "../../components/SEO";
+import { UserModel } from "../../models/User";
 
 export default function NewAccount({}: {}) {
     const router = useRouter();
     const [session, loading] = useSession();
-    const [username, setUsername] = useState<string>("");
+    const [grade, setGrade] = useState<number>(0);
+    const [school, setSchool] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>(null);
+    const [isCreateSchool, setIsCreateSchool] = useState<boolean>(false);
+
+    // const {data: schoolData, error: schoolError}: SWRResponse<DatedObj<SchoolObj>[], any> = useSWR(`/api/school`, fetcher);
+    // console.log(schoolData)
 
     function onSubmit() {
         setIsLoading(true);
 
         axios.post("/api/auth/account", {
-            username: username,
+            grade: grade,
+            school: school,
         }).then(res => {
             if (res.data.error) {
                 setError(res.data.error);
@@ -54,31 +62,60 @@ export default function NewAccount({}: {}) {
                     </div>
                 </div>
             )}
-            <h2>Choose a username</h2>
+            <h2>What grade are you in?</h2>
             <div className="flex items-center">
-                <p className="opacity-50">your-domain.com/@</p>
-                <input
+                <div onChange={e => {
+                        setGrade(e.target.value);
+                        setError(null);
+                    }}>
+                    <input type="radio" id="9" name="grade" value={9}/>
+                    <input type="radio" id="10" name="grade" value={10}/>
+                    <input type="radio" id="11" name="grade" value={11}/>
+                    <input type="radio" id="12" name="grade" value={12}/>
+                </div>
+                <p>{grade}</p>
+            </div>
+            <h2>What school do you go to?</h2>
+            <div className="flex items-center">
+                {/* <input
                     type="text"
-                    value={username}
+                    value={school}
                     onChange={e => {
-                        setUsername(e.target.value);
+                        setSchool(e.target.value);
                         if (e.target.value !== encodeURIComponent(e.target.value)) {
                             setError("URLs cannot contain spaces or special characters.");
                         }
                         setError(null);
                     }}
+                /> */}
+                {/* <Select 
+                    options={schoolData.data.map(s => ({
+                        value: s._id,
+                        label: s.name,
+                    }))}
+                    onChange={option => setSchool(option.value)}
+                    isSearchable={false}
+                    isDisabled={isLoading}
+                /> */}
+            <div>
+                <Button onClick={() => setIsCreateSchool(true)}>Don't see your school? Create a school.</Button>
+                <CreateSchoolModal 
+                    isOpen={isCreateSchool}
+                    setIsOpen={setIsCreateSchool}
+                    setSchoolId={setSchool}
                 />
+            </div>
             </div>
             {error && (
                 <p className="text-red-500">{error}</p>
             )}
-            <SpinnerButton
-                isLoading={isLoading}
+            <HandwrittenButton
+                // isLoading={isLoading}
                 onClick={onSubmit}
-                disabled={loading || username !== encodeURIComponent(username) || username.length === 0}
+                disabled={loading || school !== encodeURIComponent(school) || grade === 0 || school.length === 0}
             >
                 Let's get started!
-            </SpinnerButton>
+            </HandwrittenButton>
         </>
     );
 }
@@ -93,6 +130,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         return thisUser ? {redirect: {permanent: false, destination: "/app"}} : {props: {}};
     } catch (e) {
         console.log(e);
-        return {notFound: true};
+        return {props: {}};
     }
 };

@@ -10,8 +10,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             if (!session) return res.status(403).send("Unauthed");
             if (session.userId) return res.status(200).json({message: "Account already exists"});
 
-            if (!(req.body.username)) {
-                return res.status(400).send("Missing username");
+            if (!(req.body.grade)) {
+                return res.status(400).send("Missing grade");
+            }
+
+            if (!(req.body.school)) {
+                return res.status(400).send("Missing school");
             }
 
             try {
@@ -21,7 +25,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     email: session.user.email,
                     name: session.user.name,
                     image: session.user.image,
-                    username: req.body.username,
+                    grade: req.body.grade,
+                    school: req.body.school,
                 });
 
                 return res.status(200).json({message: "Object created"});

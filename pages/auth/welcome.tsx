@@ -25,6 +25,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         return {redirect: {permanent: false, destination: thisUser ? "/app" : "/auth/newaccount"}};
     } catch (e) {
         console.log(e);
-        return {notFound: true};
+        return {redirect: {permanent: false, destination: "/auth/newaccount"}};
     }
 };
