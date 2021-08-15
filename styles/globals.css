@@ -2,8 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Michroma&display=swap');
+
 .primary {
-    color: "#B7E1FC";
+    color: "#000000";
 }
 
 .bg-scribble-hover:hover {
@@ -26,6 +28,10 @@
 .up-spinner.dark {
     border-color: rgba(0,0,0,0.3);
     border-top-color: black;
+}
+
+.michroma{ 
+    font-family: 'Michroma';
 }
 
 @keyframes up-spin {
