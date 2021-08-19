@@ -24,7 +24,7 @@ const HandwrittenButton = ({onClick, children, href, disabled} : {
             >
                 <>
                 <p className="mr-2">{children}</p> 
-                { isShown && <FaArrowRight /> } 
+                { isShown && <FaArrowRight/> } 
                 {/* {isShown && <img src="/scribble.png" width={150} className="relative left-0 mx-auto" style={{zIndex: -1}}/>} */}
                 </>
             </Button>

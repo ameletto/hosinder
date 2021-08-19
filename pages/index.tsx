@@ -21,7 +21,7 @@ export default function Home() {
                 <p className="text-5xl z-10 p-3">Find your perfect event.</p>
                 <div className="p-2"></div>
                 <div className="flex flex-row rounded-full montserrat text-3xl p-5" style={{ color: "rgba(255,255,255,1)", background: "rgba(0,0,0,1)" }}>
-                    <SignInButton/>
+                    <SignInButton z-10/>
                 </div>  
             </div>
         </div>
