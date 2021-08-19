@@ -3,6 +3,8 @@ import { getSession } from "next-auth/client";
 import { UserModel } from "../models/User";
 
 export default function App() {
+    // fetch and map all the event cards assoc with this school.
+    // based on labels, decide on an order to show them.
     return (
         <p>app</p>
     );
