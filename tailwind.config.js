@@ -15,5 +15,14 @@ module.exports = {
             cursor: ["disabled"],
         },
     },
+
+        theme: {
+          extend: {
+           spacing: {
+             '96': '35rem',
+           }
+          }
+        },
+    
     plugins: [],
 }

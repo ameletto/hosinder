@@ -3,9 +3,9 @@ import { FaArrowRight } from "react-icons/fa";
 import Button from "./Button";
 
 
-const HandwrittenButton = ({ children, href, disabled} : {
+const HandwrittenButton = ({onClick, children, href, disabled} : {
     onClick?: any,
-    children: string, // string or JSX tags
+    children: any, // string or JSX tags
     href?: string,
     disabled?: boolean,
 }) => {
@@ -13,17 +13,17 @@ const HandwrittenButton = ({ children, href, disabled} : {
     // hover:bg-white border hover:border-transparent border-white  
     return (
         <div 
-            className = "opacity-70 hover:text-black mb-2" 
+            className = "mb-2" 
             onMouseEnter={() => setIsShown(true)}
             onMouseLeave={() => setIsShown(false)}
         >
             <Button 
-                href={href} 
                 disabled={disabled}
-                className="z-30 opacity-70 -my-5 py-5 bg-scribble-hover"
+                className="z-30 -my-5 py-5 bg-scribble-hover"
+                onClick={onClick}
             >
                 <>
-                <p className="text-2xl mr-2">{children}</p> 
+                <p className="mr-2">{children}</p> 
                 { isShown && <FaArrowRight /> } 
                 {/* {isShown && <img src="/scribble.png" width={150} className="relative left-0 mx-auto" style={{zIndex: -1}}/>} */}
                 </>

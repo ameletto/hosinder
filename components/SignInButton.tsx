@@ -1,13 +1,13 @@
-import Button from "./Button";
+import HandwrittenButton from "./HandwrittenButton";
 import {FaGoogle} from "react-icons/fa";
 import {signIn} from "next-auth/client";
 
 export default function SignInButton() {
     return (
-        <Button onClick={() => signIn("google")}>
+        <HandwrittenButton onClick={() => signIn("google")}>
             <div className="flex items-center">
                 <FaGoogle/><span className="ml-2">Sign in</span>
             </div>
-        </Button>
+        </HandwrittenButton>
     );
 }
