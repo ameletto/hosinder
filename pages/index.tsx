@@ -10,7 +10,7 @@ export default function Home() {
             <p className="absolute right-3 truncate bottom-0 z-10 oswald font-bold" style={{ transform: "rotate(180deg)", fontSize: 36 }}> SA TINDER HOSA TINDER HOSA TINDER HOSA TINDER HOSA TINDER HOSA TINDER HOSA TINDER HOSA TI</p>
             <p className="absolute truncate z-10 oswald font-bold" style={{ transform: "rotate(270deg)", fontSize: 36, bottom: 340, right: 1056}}> NDER HOSA TINDER HOSA TINDER HOSA TINDER HOSA</p>
 
-            <div className="absolute w-96 h-96 rounded-full z-0 left-overflow" style={{ background: "radial-gradient(rgba(183,225,252,1) 30%, rgba(212,208,254,0.5) 60%, rgba(255,255,255,0) 100%)", left: -40, top: -40}}>
+            <div className="absolute w-96 h-96 rounded-full z-0" style={{ background: "radial-gradient(rgba(183,225,252,1) 30%, rgba(212,208,254,0.5) 60%, rgba(255,255,255,0) 100%)", left: -40, top: -40}}>
             </div>
             
             <div className="absolute w-96 h-96 rounded-full right-0 bottom-0 z-0" style={{ background: "radial-gradient(rgba(183,225,252,1) 30%, rgba(212,208,254,0.5) 60%, rgba(255,255,255,0) 100%)", right: -40, bottom: -40}}>
