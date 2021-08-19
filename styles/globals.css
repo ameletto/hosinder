@@ -8,7 +8,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Raleway:wght@900&family=Work+Sans:wght@800&display=swap');
 
 .primary {
-    color: "#000000";
+    color: "#B7E1FC";
 }
 
 .bg-scribble-hover:hover {
@@ -33,19 +33,19 @@
     border-top-color: black;
 }
 
-.oswald{ 
+.oswald { 
     font-family: 'Oswald';
 }
 
-.work-sans{ 
+.work-sans { 
     font-family: 'Work Sans';
 }
 
-.raleway{
+.raleway {
     font-family: 'Raleway';
 }
 
-.montserrat{
+.montserrat {
     font-family: 'Montserrat';
 }
 
