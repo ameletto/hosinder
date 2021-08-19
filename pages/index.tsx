@@ -2,7 +2,7 @@ import SignInButton from "../components/SignInButton";
 
 export default function Home() {
 
-    const hosaTinder = "HOSA TINDER ".repeat(50)
+    const hosaTinder = "HOSA TINDER ".repeat(100)
 
     return (
         // <div className= font>
