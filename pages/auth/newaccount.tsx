@@ -3,7 +3,7 @@ import { GetServerSideProps } from "next";
 import { getSession, signIn, useSession } from "next-auth/client";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import Skeleton from "react-loaoding-skeleton";
+import Skeleton from "react-loading-skeleton";
 import Button from "../../components/Button";
 import CreateSchoolModal from "../../components/CreateSchoolModal";
 import HandwrittenButton from "../../components/HandwrittenButton";
