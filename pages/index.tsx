@@ -11,8 +11,8 @@ export default function Home() {
                 <div className="absolute top-0 right-0" style={{ transform: "rotate(180deg)" }}>
                     <p style={{ transform: "rotate(-90deg)", transformOrigin: "0% 0%" }}>{hosaTinder}</p>
                 </div>
-                <p className="absolute left-3 pl-10">{hosaTinder}</p>
-                <p className="absolute right-3 bottom-0 pl-10" style={{ transform: "rotate(180deg)" }}>{hosaTinder}</p>
+                <p className="absolute left-3 pl-8">{hosaTinder}</p>
+                <p className="absolute right-3 bottom-0 pl-8" style={{ transform: "rotate(180deg)" }}>{hosaTinder}</p>
                 <p className="absolute bottom-0 left-0" style={{ transform: "rotate(-90deg)", transformOrigin: "0% 0%" }}>{hosaTinder}</p>
             </div>
 
