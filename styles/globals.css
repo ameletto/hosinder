@@ -49,26 +49,6 @@
     font-family: 'Montserrat';
 }
 
-.top-right {
-    top: 393px;
-    left: 1062px;
-  }
-
-.bottom-left{
-    bottom: 340px;
-    right: 1056px;
-}
-
-.left-overflow {
-    left: -40px;
-    top: -40px;
-}
-
-.right-overflow {
-    right: -40px;
-    bottom: -40px;
-}
-
 @keyframes up-spin {
     0% { transform: rotate(0deg); }
     100% {transform: rotate(360deg); }
