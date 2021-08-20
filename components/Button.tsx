@@ -20,7 +20,7 @@ interface ButtonPropsButton extends ButtonPropsBase {
 type ButtonProps = ButtonPropsLink | ButtonPropsButton;
 
 export default function Button({children, href, onClick, className, disabled}: ButtonProps) {
-    const classNames = "disabled:opacity-25 disabled:cursor-not-allowed" + className;
+    const classNames = "disabled:opacity-25 disabled:cursor-not-allowed hover:text-black" + className;
 
     return href ? (
         <Link href={href}>
