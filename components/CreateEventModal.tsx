@@ -4,11 +4,12 @@ import HandwrittenButton from "./HandwrittenButton";
 import Input from "./Input";
 import Modal from "./Modal";
 
-const CreateSchoolModal = ({isOpen, setIsOpen, userId, setSchoolId}: {
+const CreateEventModal = ({isOpen, setIsOpen, schoolId, iter, setIter}: {
     isOpen: boolean,
     setIsOpen: Dispatch<SetStateAction<boolean>>,
-    userId: string,
-    setSchoolId: Dispatch<SetStateAction<string>>,
+    schoolId: string,
+    iter: number,
+    setIter: Dispatch<SetStateAction<number>>,
 }) => {
     const [name, setName] = useState<string>("");
     const [description, setDescription ] = useState<string>("");
@@ -21,9 +22,9 @@ const CreateSchoolModal = ({isOpen, setIsOpen, userId, setSchoolId}: {
         setIsLoading(true);
         console.log("is submitting")
 
-        axios.post("/api/school", {
+        axios.post("/api/event", {
             name: name,
-            admin: [userId],
+            school: schoolId,
             description: description,
             image: image,
         }).then(res => {
@@ -33,7 +34,7 @@ const CreateSchoolModal = ({isOpen, setIsOpen, userId, setSchoolId}: {
                 setIsLoading(false);
             } else {
                 console.log(res.data);
-                setSchoolId(res.data.id);
+                setIter(iter + 1);
                 setIsOpen(false);
             }
         }).catch(e => {
@@ -53,14 +54,14 @@ const CreateSchoolModal = ({isOpen, setIsOpen, userId, setSchoolId}: {
                 name="Name"
                 value={name}
                 setValue={setName}
-                placeholder="Garc Marneau Nerdlegiate Institute"
+                placeholder="HOSA Bowl"
             />
             <Input 
                 type="text"
                 name="Description (optional)"
                 value={description}
                 setValue={setDescription}
-                placeholder="Home to the HOSA champions"
+                placeholder="Unfortunately, this is not a bowl of HOSA swag."
             />
             <Input 
                 type="text"
@@ -72,7 +73,6 @@ const CreateSchoolModal = ({isOpen, setIsOpen, userId, setSchoolId}: {
             {error && (
                 <p className="text-red-500">{error}</p>
             )}
-            {/* I confirm I am an exec. */}
             <HandwrittenButton
                 // isLoading={isLoading}
                 onClick={onSubmit}
@@ -84,4 +84,4 @@ const CreateSchoolModal = ({isOpen, setIsOpen, userId, setSchoolId}: {
     )
 }
 
-export default CreateSchoolModal
+export default CreateEventModal

@@ -1,15 +1,14 @@
-import {EventObj} from "../../../utils/types";
-import {EventModel} from "../../../models/Event";
-import dbConnect from "../../../utils/dbConnect";
-import {NextApiRequest, NextApiResponse} from "next";
-import {getSession} from "next-auth/client";
+import { NextApiRequest, NextApiResponse } from "next";
+import { getSession } from "next-auth/client";
+import { EventModel } from "../../models/Event";
+import dbConnect from "../../utils/dbConnect";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     switch (req.method) {    
         case "GET": {
             const session = await getSession({ req });
             if (!session) return res.status(403);
-            if (!(req.query.name || req.query.description || req.query.labels || req.query.image)) {
+            if (!(req.query.school || req.query.name || req.query.description || req.query.labels || req.query.image)) {
                 return res.status(406);                        
             }
             
@@ -21,6 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 if (req.query.description) conditions["description"] = req.query.description;
                 if (req.query.labels) conditions["labels"] = req.query.labels;
                 if (req.query.image) conditions["image"] = req.query.image;
+                if (req.query.school) conditions["school"] = req.query.school;
                 
                          
                 await dbConnect();   
@@ -60,15 +60,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     
                     return res.status(200).json({message: "Object updated"});                            
                 } else {
-                    if (!(req.body.name && req.body.description && req.body.labels && req.body.image)) {
+                    if (!(req.body.name && req.body.description && req.body.school)) {
                         return res.status(406);            
                     }
                     
                     const newEvent = new EventModel({
                         name: req.body.name,
-			description: req.body.description,
-			labels: req.body.labels,
-			image: req.body.image,                             
+                        description: req.body.description,
+                        school: req.body.school,
+                        labels: req.body.labels || [],
+                        image: req.body.image || "",                             
                     });
                     
                     const savedEvent = await newEvent.save();

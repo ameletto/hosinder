@@ -3,6 +3,7 @@ import { getSession } from "next-auth/client";
 import SEO from "../../components/SEO";
 import SignInButton from "../../components/SignInButton";
 import { UserModel } from "../../models/User";
+import dbConnect from "../../utils/dbConnect";
 
 export default function Welcome({}: {}) {
     return (
@@ -21,6 +22,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     if (!session) return {props: {}};
 
     try {
+        await dbConnect();
         const thisUser = await UserModel.findOne({email: session.user.email});
         return {redirect: {permanent: false, destination: thisUser ? "/app" : "/auth/newaccount"}};
     } catch (e) {

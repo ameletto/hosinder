@@ -1,6 +1,6 @@
-import {UserModel} from "../../../models/User";
-import {NextApiRequest, NextApiResponse} from "next";
-import {getSession} from "next-auth/client";
+import { NextApiRequest, NextApiResponse } from "next";
+import { getSession } from "next-auth/client";
+import { UserModel } from "../../../models/User";
 import dbConnect from "../../../utils/dbConnect";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -13,11 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             if (!(req.body.grade)) {
                 return res.status(400).send("Missing grade");
             }
-
-            if (!(req.body.school)) {
-                return res.status(400).send("Missing school");
-            }
-
+            
             try {
                 await dbConnect();
 
@@ -26,8 +22,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     name: session.user.name,
                     image: session.user.image,
                     grade: req.body.grade,
-                    school: req.body.school,
+                    school: req.body.school || "",
+                    labels: req.body.labels || [],
+                    previousEvents: req.body.previousEvents || [],
                 });
+
 
                 return res.status(200).json({message: "Object created"});
             } catch (e) {

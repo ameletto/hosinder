@@ -5,7 +5,7 @@ interface SchoolDoc extends SchoolObj, Document {}
 
 const SchoolSchema = new mongoose.Schema({
 	name: { required: true, type: String }, 
-	admin: { required: false, type: [mongoose.Schema.Types.ObjectId] }, 
+	admin: { required: true, type: [mongoose.Schema.Types.ObjectId] }, 
 	description: { required: false, type: String }, 
 	image: { required: false, type: String }, 
 }, {

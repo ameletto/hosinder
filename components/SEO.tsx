@@ -10,7 +10,7 @@ export default function SEO({
                                 noindex = false,
                             }: { title?: string, description?: string, imgUrl?: string, authorUsername?: string, publishedDate?: string, noindex?: boolean }) {
     const router = useRouter();
-    const fullTitle = title + (router.asPath === "/" ? "" : " | YourApp");
+    const fullTitle = title + (router.asPath === "/" ? "" : " | HOSA Tinder");
 
     let openGraph = {
         title: fullTitle,
