@@ -1,16 +1,16 @@
-import {NextSeo} from "next-seo";
-import {useRouter} from "next/router";
+import { NextSeo } from "next-seo";
+import { useRouter } from "next/router";
 
 export default function SEO({
-                                  title = "NextJS starter: save hours of boilerplate setup",
-                                  description = "next-mongodb-nextauth-example allows you to skip hours of boilerplate setup with a single command when developing your app.",
-                                  imgUrl = null,
-                                  authorUsername = null,
-                                  publishedDate = null,
-                                  noindex = false,
-                              }: { title?: string, description?: string, imgUrl?: string, authorUsername?: string, publishedDate?: string, noindex?: boolean }) {
+                                title = "HOSA Tinder: Find your perfect event",
+                                description = "HOSA Tinder allows you to perform all activities regarding event selection in one place, from browsing event information to accessing insider knowledge from past students to submitting event selections.",
+                                imgUrl = null,
+                                authorUsername = null,
+                                publishedDate = null,
+                                noindex = false,
+                            }: { title?: string, description?: string, imgUrl?: string, authorUsername?: string, publishedDate?: string, noindex?: boolean }) {
     const router = useRouter();
-    const fullTitle = title + (router.asPath === "/" ? "" : " | YourApp");
+    const fullTitle = title + (router.asPath === "/" ? "" : " | HOSA Tinder");
 
     let openGraph = {
         title: fullTitle,

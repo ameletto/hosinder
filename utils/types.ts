@@ -3,24 +3,30 @@ export interface UserObj {
     name: string,
     image: string,
     grade: number,
-    school: string,
+    school?: string, // Object ID
     labels?: string[],
-    previousEvents?: string[],
-    preferredEvents?: string[],
-    notWantedEvents?: string[],
+    previousEvents?: string[], // Object ID
+    preferredEvents?: string[], // Object ID
+    notWantedEvents?: string[], // Object ID
 }
 
 export interface EventObj {
     name: string; 
     description: string; 
+    school: string; // Object ID
     labels?: string[]; // "individual" | "team" | ...
     image?: string; 
 }
 
 export interface SchoolObj {
     name: string; 
-    admin: string[]; 
+    admin: string[];  // Object ID
     description?: string; 
+    image?: string;
+}
+
+export interface SchoolObjWithAdmins extends SchoolObj {
+    adminArr: DatedObj<UserObj>[],
 }
 
 export interface SessionObj {

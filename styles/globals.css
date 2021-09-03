@@ -11,6 +11,14 @@
     color: "#B7E1FC";
 }
 
+.bg-primary {
+    background-color: "#B7E1FC";
+}
+
+.border-primary {
+    border-color: "#B7E1FC";
+}
+
 .bg-scribble-hover:hover {
     background-image: url("/scribble.png");
     background-size: contain;
