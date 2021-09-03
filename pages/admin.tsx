@@ -77,7 +77,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         const thisUser = await UserModel.findOne({email: session.user.email});
             
         const thisSchool = await SchoolModel.aggregate([
-            {$match: {...}},
+            {$match: {admin: thisUser._id}},
             {$lookup: {
                 from: "users",
                 // localField: "admin",

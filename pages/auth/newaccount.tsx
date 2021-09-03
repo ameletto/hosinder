@@ -49,6 +49,10 @@ export default function NewAccount({ }: {}) {
             console.log(e);
         });
     }
+    function setGradeValue(e){
+        setGrade(e.target.value);
+        setError(null);
+    }
 
     return (
         <>
@@ -73,8 +77,7 @@ export default function NewAccount({ }: {}) {
                 <h2>Grade:</h2>
                 <div>
                     <div onChange={e => {
-                        setGrade(e.target.value);
-                        setError(null);
+                        setGradeValue(e)
                     }} className="float-left pl-4 pr-4">
                         {[9, 10, 11, 12].map(g => (
                         <>

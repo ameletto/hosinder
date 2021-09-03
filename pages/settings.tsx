@@ -49,6 +49,10 @@ export default function NewAccount(props: { thisUser: DatedObj<UserObj> }) {
             console.log(e);
         });
     }
+    function setGradeValue(e){
+        setGrade(e.target.value);
+        setError(null);
+    }
 
     return (
         <>
@@ -71,8 +75,7 @@ export default function NewAccount(props: { thisUser: DatedObj<UserObj> }) {
             <div className="flex justify-center items-center p-4 oswald font-bold text-xl">
                 <h2>Grade:</h2>
                 <div onChange={e => {
-                    setGrade(e.target.value);
-                    setError(null);
+                    setGradeValue(e)
                 }} className="float-left pl-4 pr-4">
                     {[9, 10, 11, 12].map(g => (
                         <>
