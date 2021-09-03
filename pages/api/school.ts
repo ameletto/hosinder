@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/client";
-import { SchoolModel } from "../../../models/School";
-import dbConnect from "../../../utils/dbConnect";
+import { SchoolModel } from "../../models/School";
+import dbConnect from "../../utils/dbConnect";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     switch (req.method) {    
@@ -58,14 +58,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     if (!(req.body.name)) {
                         return res.status(406);            
                     }
+
+                    if (!(req.body.admin)) return res.status(406).send("Missing admin");
                     
                     const newSchool = new SchoolModel({
                         name: req.body.name,
-                        admin: req.body.admin || [],
+                        admin: req.body.admin,
                         description: req.body.description || "",                             
                         image: req.body.image || "",                             
                     });
                     
+                    // return res.status(200).json({message: newSchool});
                     const savedSchool = await newSchool.save();
                     
                     return res.status(200).json({message: "Object created", id: savedSchool._id.toString()});

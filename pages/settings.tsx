@@ -1,31 +1,33 @@
 import axios from "axios";
 import { GetServerSideProps } from "next";
-import { getSession, signIn, useSession } from "next-auth/client";
+import { getSession, useSession } from "next-auth/client";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import Select from "react-select";
 import useSWR, { SWRResponse } from "swr";
-import HandwrittenButton from "../../components/HandwrittenButton";
-import SEO from "../../components/SEO";
-import { UserModel } from "../../models/User";
-import dbConnect from "../../utils/dbConnect";
-import fetcher from "../../utils/fetcher";
-import { DatedObj, SchoolObj } from "../../utils/types";
+import CreateSchoolModal from "../components/CreateSchoolModal";
+import HandwrittenButton from "../components/HandwrittenButton";
+import SEO from "../components/SEO";
+import { UserModel } from "../models/User";
+import cleanForJSON from "../utils/cleanForJSON";
+import dbConnect from "../utils/dbConnect";
+import fetcher from "../utils/fetcher";
+import { DatedObj, SchoolObj, UserObj } from "../utils/types";
 
-//  TODO: set labels and set previous events on change.
-
-export default function NewAccount({ }: {}) {
+export default function NewAccount(props: { thisUser: DatedObj<UserObj> }) {
+    const thisUser = props.thisUser;
     const router = useRouter();
     const [session, loading] = useSession();
-    const [grade, setGrade] = useState<number>(0);
-    const [school, setSchool] = useState<string>("");
-    const [labels, setLabels] = useState<string[]>([]);
-    const [prevEvents, setPrevEvents] = useState<string[]>([]);
+    const [grade, setGrade] = useState<number>(thisUser.grade);
+    const [school, setSchool] = useState<string>(thisUser.school || "");
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>(null);
+    const [isCreateSchool, setIsCreateSchool] = useState<boolean>(false);
+
 
     const {data: schoolData, error: schoolError}: SWRResponse<{data: DatedObj<SchoolObj>[]}, any> = useSWR(`/api/school`, fetcher);
+
 
     function onSubmit() {
         setIsLoading(true);
@@ -33,15 +35,13 @@ export default function NewAccount({ }: {}) {
         axios.post("/api/auth/account", {
             grade: grade,
             school: school,
-            labels: labels,
-            previousEvents: prevEvents,
         }).then(res => {
             if (res.data.error) {
                 setError(res.data.error);
                 setIsLoading(false);
             } else {
                 console.log("redirecting...");
-                signIn("google").then(() => router.push("/app")).catch(e => console.log(e));
+                router.push("/app");
             }
         }).catch(e => {
             setIsLoading(false);
@@ -52,8 +52,7 @@ export default function NewAccount({ }: {}) {
 
     return (
         <>
-            <SEO title="New account" />
-            <h1 className="raleway text-4xl underline text-center p-2">Tell us about yourself</h1>
+            <SEO title="Settings" />
             {loading ? (
                 <Skeleton count={2} />
             ) : (
@@ -71,12 +70,11 @@ export default function NewAccount({ }: {}) {
             )}
             <div className="flex justify-center items-center p-4 oswald font-bold text-xl">
                 <h2>Grade:</h2>
-                <div>
-                    <div onChange={e => {
-                        setGrade(e.target.value);
-                        setError(null);
-                    }} className="float-left pl-4 pr-4">
-                        {[9, 10, 11, 12].map(g => (
+                <div onChange={e => {
+                    setGrade(e.target.value);
+                    setError(null);
+                }} className="float-left pl-4 pr-4">
+                    {[9, 10, 11, 12].map(g => (
                         <>
                         <input type="radio" id={g.toString()} name="grade" value={g} style={{display: "none",}}/>
                         <label 
@@ -85,8 +83,6 @@ export default function NewAccount({ }: {}) {
                         >{g}</label>
                         </>
                     ))}
-                    </div>
-                    <p className="float-right">{grade}</p>
                 </div>
             </div>
             <h2 className="flex justify-center items-center p-4 oswald font-bold text-xl">School:</h2>
@@ -101,7 +97,16 @@ export default function NewAccount({ }: {}) {
                     isDisabled={isLoading}
                     className="w-full"
                 />
-                <p>Don't see your school? Tell your execs to create a school.<br/>Or, continue without one.</p>
+                <div className="flex justify-center items-center p-4 oswald font-bold text-xl">
+                    <HandwrittenButton onClick={() => setIsCreateSchool(true)} >Don't see your school? Create a school.</HandwrittenButton>
+                    {/* className="justify-center items-center text-center underline" */}
+                    <CreateSchoolModal
+                        isOpen={isCreateSchool}
+                        setIsOpen={setIsCreateSchool}
+                        setSchoolId={setSchool}
+                        userId={thisUser._id}
+                    />
+                </div>
             </div>
             <div className="flex justify-center items-center p-4 oswald font-bold text-xl">
                 <label>Previous HOSA events:</label>
@@ -166,7 +171,7 @@ export default function NewAccount({ }: {}) {
                 onClick={onSubmit}
                 disabled={loading || grade === 0 }
             >
-                SUBMIT
+                Save
             </HandwrittenButton>
             </div>
         </>
@@ -176,14 +181,14 @@ export default function NewAccount({ }: {}) {
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const session = await getSession(context);
 
-            if (!session) return {redirect: {permanent: false, destination: "/auth/welcome"}};
+    if (!session) return {redirect: {permanent: false, destination: "/auth/welcome"}};
 
-            try {
+    try {
         await dbConnect();
         const thisUser = await UserModel.findOne({email: session.user.email});
-            return thisUser ? {redirect: {permanent: false, destination: "/app"}} : {props: { }};
+        return !thisUser ? {redirect: {permanent: false, destination: "/auth/newaccount"}} : {props: { thisUser: cleanForJSON(thisUser) }};
     } catch (e) {
-                console.log(e);
-            return {props: { }};
+        console.log(e);
+        return {props: { }};
     }
 };
