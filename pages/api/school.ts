@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/client";
 import { SchoolModel } from "../../models/School";
+import cleanForJSON from "../../utils/cleanForJSON";
 import dbConnect from "../../utils/dbConnect";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -9,25 +10,50 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const session = await getSession({ req });
             if (!session) return res.status(403);
             
-            try {                
-                let conditions = {};
+            try {
+                if (!req.query.id) {
+                    const allSchools = await SchoolModel.find();
+                    if (!allSchools || !allSchools.length) return res.status(404);
+                    return res.status(200).json({data: allSchools});
+                }
+                // let conditions = {};
+                // conditions["admin"] = req.query.admin;
 
-                if (req.query.id) conditions["_id"] = req.query.id;
-                if (req.query.name) conditions["name"] = req.query.name;
-                if (req.query.admin) conditions["admin"] = req.query.admin;
-                if (req.query.description) conditions["description"] = req.query.description;
+                // if (req.query.admin && req.query.admin !== session.usre)
+
+                const mongoose = require('mongoose');
+
+                const id = mongoose.Types.ObjectId(`${req.query.id}`);
                 
                          
-                await dbConnect();   
+                await dbConnect();  
+
+
             
+                // return res.status(200).json({data: cleanForJSON(school)});
                 const thisObject = await SchoolModel.aggregate([
-                    {$match: conditions},
-                    
+                    {$match: {_id: id}},
+                    {$lookup: {
+                        from: "users",
+                        // localField: "admin",
+                        // foreignField: "_id",
+                        let: {"ad": "$admin"},
+                        pipeline: [
+                            {$match: {$expr: {$and: [{$in: ["$_id", "$$ad"]}, ]}}},
+                        ],
+                        as: "adminsArr", 
+                    }},                    
+                    {$lookup: {
+                        from: "events",
+                        localField: "_id",
+                        foreignField: "school",
+                        as: "eventsArr",
+                    }},
                 ]);
                 
                 if (!thisObject || !thisObject.length) return res.status(404);
                 
-                return res.status(200).json({data: thisObject});
+                return res.status(200).json({data: cleanForJSON(thisObject[0])});
             } catch (e) {
                 return res.status(500).json({message: e});                        
             }

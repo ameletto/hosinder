@@ -1,6 +1,7 @@
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/client";
 import { UserModel } from "../models/User";
+import cleanForJSON from "../utils/cleanForJSON";
 import dbConnect from "../utils/dbConnect";
 
 export default function App() {
@@ -19,9 +20,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     try {
         await dbConnect();
         const thisUser = await UserModel.findOne({email: session.user.email});
-        return thisUser ? {props: {user: thisUser}} : {redirect: {permanent: false, destination: "/welcome"}};
+        return thisUser ? {props: {user: cleanForJSON(thisUser)}} : {redirect: {permanent: false, destination: "auth/welcome"}};
     } catch (e) {
         console.log(e);
-        return {redirect: {permanent: false, destination: "/welcome"}};
+        return {notFound: true};
     }
 };

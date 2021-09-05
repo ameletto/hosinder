@@ -1,4 +1,8 @@
+import { GetServerSideProps } from "next";
+import { getSession } from "next-auth/client";
 import SignInButton from "../components/SignInButton";
+import { UserModel } from "../models/User";
+import dbConnect from "../utils/dbConnect";
 
 export default function Home() {
 
@@ -41,3 +45,18 @@ export default function Home() {
                 </HandwrittenButton> */}
 
 {/* textShadowColor: "black", textShadowOffset: {width: 10, height: 10}, textShadowRadius: 10 */}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    const session = await getSession(context);
+
+    if (!session) return {props: {}};
+
+    try {
+        await dbConnect();
+        const thisUser = await UserModel.findOne({email: session.user.email});
+        return {redirect: {permanent: false, destination: thisUser ? "app" : "/auth/newaccount"}};
+    } catch (e) {
+        console.log(e);
+        return {redirect: {permanent: false, destination: "/auth/newaccount"}};
+    }
+};

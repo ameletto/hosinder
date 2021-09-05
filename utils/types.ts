@@ -25,8 +25,9 @@ export interface SchoolObj {
     image?: string;
 }
 
-export interface SchoolObjWithAdmins extends SchoolObj {
-    adminArr: DatedObj<UserObj>[],
+export interface SchoolObjGraph extends SchoolObj {
+    adminsArr: DatedObj<UserObj>[],
+    eventsArr: DatedObj<EventObj>[],
 }
 
 export interface SessionObj {
