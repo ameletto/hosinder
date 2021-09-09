@@ -11,16 +11,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             if (!(req.query.school || req.query.name || req.query.description || req.query.labels || req.query.image)) {
                 return res.status(406);                        
             }
-            
+
+            const mongoose = require('mongoose');
+
             try {                
                 let conditions = {};
-
-                if (req.query.id) conditions["_id"] = req.query.id;
+                if (req.query.id) conditions["_id"] = mongoose.Types.ObjectId(`${req.query.id}`);
                 if (req.query.name) conditions["name"] = req.query.name;
                 if (req.query.description) conditions["description"] = req.query.description;
                 if (req.query.labels) conditions["labels"] = req.query.labels;
                 if (req.query.image) conditions["image"] = req.query.image;
-                if (req.query.school) conditions["school"] = req.query.school;
+                if (req.query.school) conditions["school"] = mongoose.Types.ObjectId(`${req.query.school}`);
                 
                          
                 await dbConnect();   
@@ -32,7 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 
                 if (!thisObject || !thisObject.length) return res.status(404);
                 
-                return res.status(200).json({data: thisObject[0]});
+                return res.status(200).json({data: thisObject});
             } catch (e) {
                 return res.status(500).json({message: e});                        
             }
