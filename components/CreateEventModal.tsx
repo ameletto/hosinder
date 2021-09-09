@@ -16,7 +16,6 @@ const CreateEventModal = ({isOpen, setIsOpen, schoolId, iter, setIter}: {
     const [image, setImage ] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>(null);
-    console.log(name, encodeURIComponent(name))
 
     function onSubmit() {
         setIsLoading(true);
@@ -35,6 +34,9 @@ const CreateEventModal = ({isOpen, setIsOpen, schoolId, iter, setIter}: {
             } else {
                 console.log(res.data);
                 setIter(iter + 1);
+                setIsLoading(false);
+                setName("");
+                setDescription("");
                 setIsOpen(false);
             }
         }).catch(e => {
@@ -78,7 +80,7 @@ const CreateEventModal = ({isOpen, setIsOpen, schoolId, iter, setIter}: {
                 onClick={onSubmit}
                 disabled={isLoading || name.length === 0}
             >
-                Create school!
+                Create event!
             </HandwrittenButton>
         </Modal>
     )

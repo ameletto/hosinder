@@ -20,7 +20,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     try {
         await dbConnect();
         const thisUser = await UserModel.findOne({email: session.user.email});
-        return thisUser ? {props: {user: cleanForJSON(thisUser)}} : {redirect: {permanent: false, destination: "auth/welcome"}};
+        return thisUser ? {props: {user: cleanForJSON(thisUser)}} : {redirect: {permanent: false, destination: "/auth/welcome"}};
     } catch (e) {
         console.log(e);
         return {notFound: true};

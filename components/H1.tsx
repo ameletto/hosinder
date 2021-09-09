@@ -3,7 +3,7 @@ const H1 = ({children, className} : {
     className?: string,
 }) => {
     return (
-        <h1 className={`text-4xl font-bold ${className && className}`}>{children}</h1>
+        <p className={`text-2xl font-semibold text-gray-700 ${className}`}>{children}</p>
     )
 }
 

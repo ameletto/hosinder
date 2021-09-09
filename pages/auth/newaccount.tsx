@@ -6,6 +6,7 @@ import { useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import Select from "react-select";
 import useSWR, { SWRResponse } from "swr";
+import H2 from "../../components/H2";
 import HandwrittenButton from "../../components/HandwrittenButton";
 import SEO from "../../components/SEO";
 import { UserModel } from "../../models/User";
@@ -74,7 +75,7 @@ export default function NewAccount({ }: {}) {
                 </div>
             )}
             <div className="flex justify-center items-center p-4 oswald font-bold text-xl">
-                <h2>Grade:</h2>
+                <H2>Grade:</H2>
                 <div>
                     <div onChange={e => {
                         setGradeValue(e)
@@ -84,15 +85,14 @@ export default function NewAccount({ }: {}) {
                         <input type="radio" id={g.toString()} name="grade" value={g} style={{display: "none",}}/>
                         <label 
                             htmlFor={g.toString()} 
-                            className={`w-6 h-6 rounded-full cursor-pointer transition px-2 mx-4 ${g == grade && "bg-primary"}`}
+                            className={`w-6 h-6 rounded-full cursor-pointer transition px-2 mx-4 ${g == grade && "bg-blue-300"}`}
                         >{g}</label>
                         </>
                     ))}
                     </div>
-                    <p className="float-right">{grade}</p>
                 </div>
             </div>
-            <h2 className="flex justify-center items-center p-4 oswald font-bold text-xl">School:</h2>
+            <H2 className="flex justify-center items-center p-4 oswald font-bold text-xl">School:</H2>
             <div className="flex items-center">
 
                 <Select 
