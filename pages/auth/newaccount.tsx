@@ -42,7 +42,7 @@ export default function NewAccount({ }: {}) {
                 setIsLoading(false);
             } else {
                 console.log("redirecting...");
-                signIn("google").then(() => router.push("/app")).catch(e => console.log(e));
+                router.push("/app");
             }
         }).catch(e => {
             setIsLoading(false);
@@ -53,6 +53,26 @@ export default function NewAccount({ }: {}) {
     function setGradeValue(e){
         setGrade(e.target.value);
         setError(null);
+    }
+
+    const onLabelChange = (label, clear = false) => {
+        if (clear) {
+            // todo clearning doesn tfully work
+            console.log("clearing")
+            if (label === "individual" || label === "team") setLabels(labels.filter(l => l !== "individual" && l !== "team"))
+            else if (label === "KT" || label === "skill")  setLabels([...labels.filter(l => l !== "KT" && l !== "skill")])
+        } else { 
+            console.log("not clearing")     
+        console.log(labels)  
+        console.log(label)
+            if (label === "individual" || label === "team") {
+                console.log([...labels.filter(l => l !== "individual" && l !== "team"), label])
+                setLabels([...labels.filter(l => l !== "individual" && l !== "team"), label])
+            }
+            else if (label === "KT" || label === "skill")  setLabels([...labels.filter(l => l !== "KT" && l !== "skill"), label])
+            // else setLabels([...labels, label]);
+        }
+        console.log(labels)
     }
 
     return (
@@ -104,7 +124,7 @@ export default function NewAccount({ }: {}) {
                     isDisabled={isLoading}
                     className="w-full"
                 />
-                <p>Don't see your school? Tell your execs to create a school.<br/>Or, continue without one.</p>
+                {/* <p>Don't see your school? Tell your execs to create a school.<br/>Or, continue without one.</p> */}
             </div>
             <div className="flex justify-center items-center p-4 oswald font-bold text-xl">
                 <label>Previous HOSA events:</label>
@@ -144,20 +164,43 @@ export default function NewAccount({ }: {}) {
 
             <div className="flex justify-center items-center p-4 oswald font-bold text-xl">
                 <label>Do you prefer team events or individual events (optional):</label>
-                <select name="teamOrIndiv" id="teamOrIndiv">
+                <Select 
+                    options={[
+                        {value: "team", label: "Team events"},
+                        {value: "individual", label: "Individual events"},
+                    ]}
+                    onChange={option => onLabelChange(option ? option.value : "Team events", !option)}
+                    isDisabled={isLoading}
+                    isClearable={true}
+                    className="font-normal w-full"
+                    id="teamVsIndividual"
+                />
+
+                {/* <select name="teamOrIndiv" id="teamOrIndiv">
                     <option value="none">-</option>
                     <option value="team">Team Events</option>
-                    <option value="indiv">Individual Events</option>
-                </select>
+                    <option value="individual">Individual Events</option>
+                </select> */}
             </div>
 
                 <div className="flex justify-center items-center p-4 oswald font-bold text-xl">
                     <label>Do you prefer knowledge tests or skill performances (optional):</label>
-                    <select name="KTorSkillPerf" id="KTorSkillPerf">
+                    <Select 
+                        options={[
+                            {value: "KT", label: "Knowledge Tests"},
+                            {value: "skill", label: "Skill Performances"},
+                        ]}
+                        onChange={option => onLabelChange(option ? option.value : "KT", !option)}
+                        isDisabled={isLoading}
+                        isClearable={true}
+                        className="font-normal w-full"
+                        id="ktvsskill"
+                    />
+                    {/* <select name="KTorSkillPerf" id="KTorSkillPerf">
                         <option value="none">-</option>
                         <option value="KT">Knowledge Tests</option>
                         <option value="skill">Skill Performances</option>
-                    </select>
+                    </select> */}
                 </div>
 
                 {error && (
@@ -167,7 +210,7 @@ export default function NewAccount({ }: {}) {
             <HandwrittenButton
                 // isLoading={isLoading}
                 onClick={onSubmit}
-                disabled={loading || grade === 0 }
+                disabled={loading || grade === 0 || !school}
             >
                 SUBMIT
             </HandwrittenButton>

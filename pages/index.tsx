@@ -1,5 +1,6 @@
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/client";
+import Button from "../components/Button";
 import SignInButton from "../components/SignInButton";
 import { UserModel } from "../models/User";
 import dbConnect from "../utils/dbConnect";
@@ -33,7 +34,7 @@ export default function Home() {
                 </div>
                 <div className="p-2"></div>
                 <div className="flex flex-row rounded-full montserrat text-3xl p-5" style={{ color: "rgba(255,255,255,1)", background: "rgba(0,0,0,1)" }}>
-                    <SignInButton z-10/>
+                    <Button href="/auth/welcome">Sign in</Button>
                 </div>  
             </div>
         </div>
