@@ -31,6 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             
                 // return res.status(200).json({data: cleanForJSON(school)});
+                // get all schools that id = req.query.id
                 const thisObject = await SchoolModel.aggregate([
                     {$match: {_id: id}},
                     {$lookup: {
