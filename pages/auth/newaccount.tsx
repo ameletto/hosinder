@@ -1,20 +1,19 @@
 import axios from "axios";
 import { GetServerSideProps } from "next";
-import { getSession, signIn, useSession } from "next-auth/client";
+import { getSession, useSession } from "next-auth/client";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import Select from "react-select";
 import useSWR, { SWRResponse } from "swr";
+import H1 from "../../components/H1";
 import H2 from "../../components/H2";
 import HandwrittenButton from "../../components/HandwrittenButton";
 import SEO from "../../components/SEO";
 import { UserModel } from "../../models/User";
 import dbConnect from "../../utils/dbConnect";
 import fetcher from "../../utils/fetcher";
-import { DatedObj, SchoolObj } from "../../utils/types";
-
-//  TODO: set labels and set previous events on change.
+import { DatedObj, EventObj, SchoolObj } from "../../utils/types";
 
 export default function NewAccount({ }: {}) {
     const router = useRouter();
@@ -27,6 +26,7 @@ export default function NewAccount({ }: {}) {
     const [error, setError] = useState<string>(null);
 
     const {data: schoolData, error: schoolError}: SWRResponse<{data: DatedObj<SchoolObj>[]}, any> = useSWR(`/api/school`, fetcher);
+    const {data: eventsData, error: eventsError}: SWRResponse<{data: DatedObj<EventObj>[]}, any> = useSWR(`/api/event`, fetcher);
 
     function onSubmit() {
         setIsLoading(true);
@@ -56,29 +56,25 @@ export default function NewAccount({ }: {}) {
     }
 
     const onLabelChange = (label, clear = false) => {
+        let newLabels;
         if (clear) {
             // todo clearning doesn tfully work
             console.log("clearing")
-            if (label === "individual" || label === "team") setLabels(labels.filter(l => l !== "individual" && l !== "team"))
-            else if (label === "KT" || label === "skill")  setLabels([...labels.filter(l => l !== "KT" && l !== "skill")])
+            if (label === "individual" || label === "team") newLabels = labels.filter(l => l !== "individual" && l !== "team");
+            else if (label === "KT" || label === "skill") newLabels = labels.filter(l => l !== "KT" && l !== "skill");
         } else { 
-            console.log("not clearing")     
-        console.log(labels)  
-        console.log(label)
-            if (label === "individual" || label === "team") {
-                console.log([...labels.filter(l => l !== "individual" && l !== "team"), label])
-                setLabels([...labels.filter(l => l !== "individual" && l !== "team"), label])
-            }
-            else if (label === "KT" || label === "skill")  setLabels([...labels.filter(l => l !== "KT" && l !== "skill"), label])
+            if (label === "individual" || label === "team") newLabels = [...labels.filter(l => l !== "individual" && l !== "team"), label];
+            else if (label === "KT" || label === "skill") newLabels = [...labels.filter(l => l !== "KT" && l !== "skill"), label];
             // else setLabels([...labels, label]);
         }
-        console.log(labels)
+        console.log(newLabels)
+        setLabels(newLabels)
     }
 
     return (
         <>
             <SEO title="New account" />
-            <h1 className="raleway text-4xl underline text-center p-2">Tell us about yourself</h1>
+            <H1 className="raleway text-4xl underline text-center p-2">Tell us about yourself</H1>
             {loading ? (
                 <Skeleton count={2} />
             ) : (
@@ -128,7 +124,20 @@ export default function NewAccount({ }: {}) {
             </div>
             <div className="flex justify-center items-center p-4 oswald font-bold text-xl">
                 <label>Previous HOSA events:</label>
-                <select name="hosaEvents" id="hosaEvents" multiple>
+                {/* TODO: multi select */}
+                <Select 
+                    isMulti
+                    options={eventsData && eventsData.data && eventsData.data.map(event => ({
+                        value: event._id,
+                        label: event.name,
+                    }))}
+                    onChange={newSelectedOptions => setPrevEvents(newSelectedOptions.map(option => option.value))}
+                    isDisabled={isLoading}
+                    isClearable={true}
+                    className="font-normal w-full"
+                    id="prevEvents"
+                />
+                {/* <select name="hosaEvents" id="hosaEvents" multiple>
                     <option value="none">-</option>
                     <option value="behavHealth">Behavioral Health</option>
                     <option value="dentTerm">Dental Terminology</option>
@@ -159,7 +168,7 @@ export default function NewAccount({ }: {}) {
                     <option value="forenSci">Forensic Science</option>
                     <option value="HOSABowl">HOSA Bowl</option>
                     <option value="medInno">Medical Innovation</option>
-                </select>
+                </select> */}
             </div>
 
             <div className="flex justify-center items-center p-4 oswald font-bold text-xl">
@@ -183,27 +192,27 @@ export default function NewAccount({ }: {}) {
                 </select> */}
             </div>
 
-                <div className="flex justify-center items-center p-4 oswald font-bold text-xl">
-                    <label>Do you prefer knowledge tests or skill performances (optional):</label>
-                    <Select 
-                        options={[
-                            {value: "KT", label: "Knowledge Tests"},
-                            {value: "skill", label: "Skill Performances"},
-                        ]}
-                        onChange={option => onLabelChange(option ? option.value : "KT", !option)}
-                        isDisabled={isLoading}
-                        isClearable={true}
-                        className="font-normal w-full"
-                        id="ktvsskill"
-                    />
-                    {/* <select name="KTorSkillPerf" id="KTorSkillPerf">
-                        <option value="none">-</option>
-                        <option value="KT">Knowledge Tests</option>
-                        <option value="skill">Skill Performances</option>
-                    </select> */}
-                </div>
+            <div className="flex justify-center items-center p-4 oswald font-bold text-xl">
+                <label>Do you prefer knowledge tests or skill performances (optional):</label>
+                <Select 
+                    options={[
+                        {value: "KT", label: "Knowledge tests"},
+                        {value: "skill", label: "Skill performances"},
+                    ]}
+                    onChange={option => onLabelChange(option ? option.value : "KT", !option)}
+                    isDisabled={isLoading}
+                    isClearable={true}
+                    className="font-normal w-full"
+                    id="ktvsskill"
+                />
+                {/* <select name="KTorSkillPerf" id="KTorSkillPerf">
+                    <option value="none">-</option>
+                    <option value="KT">Knowledge Tests</option>
+                    <option value="skill">Skill Performances</option>
+                </select> */}
+            </div>
 
-                {error && (
+            {error && (
                 <p className="text-red-500">{error}</p>
             )}
             <div className="flex justify-center items-center p-4 oswald font-bold text-xl">

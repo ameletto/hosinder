@@ -18,16 +18,42 @@ import cleanForJSON from "../utils/cleanForJSON";
 import dbConnect from "../utils/dbConnect";
 import fetcher from "../utils/fetcher";
 import { DatedObj, SchoolObj, SchoolObjGraph, UserObj } from "../utils/types";
+import axios from "axios";
 
 const admin = (props: { thisUser: DatedObj<UserObj>, thisSchool: DatedObj<SchoolObj> }) => {
     const [isCreateEvent, setIsCreateEvent] = useState<boolean>(false);
     const [isAddAdmin, setIsAddAdmin] = useState<boolean>(false);
     const [iter, setIter] = useState<number>(0);
-    const [newAdmin, setNewAdmin] = useState<string>("");
+    const [newAdmins, setNewAdmins] = useState<string[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string>(null);
     
     const {data: schoolData, error: schoolError}: SWRResponse<{data: DatedObj<SchoolObjGraph>}, any> = useSWR(`/api/school?id=${props.thisSchool._id}&iter=${iter}`, fetcher);
     const {data: studentsData, error: studentsError}: SWRResponse<{data: DatedObj<UserObj>[]}, any> = useSWR(`/api/user?school=${props.thisSchool._id}&removeAdmins=${false}`, fetcher);
     if (studentsData && studentsData.data) console.table([...studentsData.data, props.thisUser])
+
+    function onAddAdmin() {
+        setIsLoading(true);
+        console.log("is submitting")
+
+        axios.post("/api/school", {
+            id: props.thisSchool._id,
+            admin: [...props.thisSchool.admin, ...newAdmins,],
+        }).then(res => {
+            if (res.data.error) {
+                setError(res.data.error);
+                console.log(res.data.error)
+                setIsLoading(false);
+            } else {
+                console.log(res.data);
+                setIsAddAdmin(false);
+            }
+        }).catch(e => {
+            setIsLoading(false);
+            setError("An unknown error occurred.");
+            console.log(e);
+        });
+    }
 
     return (
         <Container width="7xl">
@@ -68,7 +94,7 @@ const admin = (props: { thisUser: DatedObj<UserObj>, thisSchool: DatedObj<School
                 </div>
                 <div className="flex gap-4">
                     {schoolData && schoolData.data && schoolData.data.adminsArr.map(user => (
-                        // click on user -> popup with more info?
+                        // TODO: click on user -> popup with more info?
                         <div className="flex justify-center p-4 oswald font-bold rounded-md transition border border-transparent hover:border-gray-400" key={user._id}>
                             <img
                                 src={user.image}
@@ -82,19 +108,24 @@ const admin = (props: { thisUser: DatedObj<UserObj>, thisSchool: DatedObj<School
                         </div>
                     ))}
                 </div>
-                    <Modal isOpen={isAddAdmin} setIsOpen={setIsAddAdmin}>
-                        <H2 className="mb-2">Add admin</H2>
-                        <p className="mb-4">Here is everyone that goes to {props.thisSchool.name}:</p>
-                        <Select 
-                            options={studentsData && studentsData.data && studentsData.data.map(s => ({
-                                value: s._id,
-                                label: s.name,
-                            }))}
-                            onChange={option => setNewAdmin(option.value)}
-                            // isDisabled={isLoading}
-                            className="w-full"
-                        />
-                    </Modal>
+                <Modal isOpen={isAddAdmin} setIsOpen={setIsAddAdmin}>
+                    <H2 className="mb-2">Add admin</H2>
+                    <p className="mb-4">Here is everyone that goes to {props.thisSchool.name}:</p>
+                    <Select 
+                        isMulti
+                        options={studentsData && studentsData.data && studentsData.data.map(s => ({
+                            value: s._id,
+                            label: s.name,
+                        }))}
+                        onChange={newSelectedOptions => setNewAdmins(newSelectedOptions.map(option => option.value))}
+                        isDisabled={isLoading}
+                        className="w-full"
+                    />
+                    {error && (
+                        <p className="text-red-500">{error}</p>
+                    )}
+                    <HandwrittenButton onClick={onAddAdmin}>Add</HandwrittenButton>
+                </Modal>
             </div>
 
 
