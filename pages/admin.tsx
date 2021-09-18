@@ -19,6 +19,7 @@ import dbConnect from "../utils/dbConnect";
 import fetcher from "../utils/fetcher";
 import { DatedObj, SchoolObj, SchoolObjGraph, UserObj } from "../utils/types";
 import axios from "axios";
+import EventCard from "../components/EventCard";
 
 const admin = (props: { thisUser: DatedObj<UserObj>, thisSchool: DatedObj<SchoolObj> }) => {
     const [isCreateEvent, setIsCreateEvent] = useState<boolean>(false);
@@ -63,7 +64,7 @@ const admin = (props: { thisUser: DatedObj<UserObj>, thisSchool: DatedObj<School
 
             <div className="mb-8">
                 <div className="flex">
-                    <H2>Your events:</H2>
+                    <H2 className="mb-4">Your events:</H2>
                     <div className="ml-auto"><HandwrittenButton onClick={() => setIsCreateEvent(true)} arrowRightOnHover={false}>
                         <div className="flex items-center">
                             <FaPlus/><span className="ml-2">New event</span>
@@ -71,21 +72,17 @@ const admin = (props: { thisUser: DatedObj<UserObj>, thisSchool: DatedObj<School
                     </HandwrittenButton></div>
                 </div>
                 <CreateEventModal isOpen={isCreateEvent} setIsOpen={setIsCreateEvent} schoolId={props.thisSchool._id} iter={iter} setIter={setIter}/>
-                <div className="flex">
+                <div className="flex gap-8">
                     {(schoolData && schoolData.data) && schoolData.data.eventsArr.length > 0 ? schoolData.data.eventsArr.map(event => (
                         // Grid of events
-                            <div className="rounded-md border border-blue-300 w-1/3 p-2 text-center" key={event._id}>
-                                <H3>{event.name}</H3>
-                                {event.image && <img src={event.image}/>}
-                                <p>{event.description}</p>
-                            </div>
+                        <EventCard event={event}/>
                     )) : <p>No events yet. Create an event so your students can start tinder-matching themselves to 'em ;)</p>}
                 </div>
             </div>
 
             <div>
                 <div className="flex">
-                    <H2>Your admins:</H2>
+                    <H2 className="mb-4">Your admins:</H2>
                     <div className="ml-auto"><HandwrittenButton onClick={() => setIsAddAdmin(true)} arrowRightOnHover={false}>
                         <div className="flex items-center">
                             <FaPlus/><span className="ml-2">Add an admin</span>

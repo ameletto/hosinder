@@ -12,6 +12,7 @@ import Container from "../components/Container";
 import Button from "../components/Button";
 import {useState} from 'react';
 import axios from "axios";
+import router from "next/router";
 
 export default function App(props: { thisUser: DatedObj<UserObj> }) {
     // fetch and map all the event cards assoc with this school.
@@ -37,6 +38,7 @@ export default function App(props: { thisUser: DatedObj<UserObj> }) {
         }).catch(e => console.log(e))
         .finally(() => setI(i+1));
     }
+    if (eventData && eventData.data.length > i) router.push("/dashboard")
 
     return (
         <Container>

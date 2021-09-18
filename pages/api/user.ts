@@ -55,7 +55,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 if (req.body.grade) user.grade = req.body.grade
                 if (req.body.school) user.school = req.body.school
                 if (req.body.preferredEvents) user.preferredEvents = req.body.preferredEvents
+                if (req.body.preferredEvents) user.markModified("preferredEvents");
                 if (req.body.notWantedEvents) user.notWantedEvents = req.body.notWantedEvents
+
                 await user.save();
 
 

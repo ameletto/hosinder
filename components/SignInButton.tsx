@@ -4,7 +4,6 @@ import { FaGoogle } from "react-icons/fa";
 import HandwrittenButton from "./HandwrittenButton";
 
 export default function SignInButton() {
-    const router = useRouter();
     return (
         <HandwrittenButton onClick={() => signIn("google")}>
             <div className="flex items-center">

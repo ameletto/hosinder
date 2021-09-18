@@ -67,7 +67,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         description: req.body.description,
                         school: req.body.school,
                         labels: req.body.labels || [],
-                        image: req.body.image || "",                             
+                        image: req.body.image || "",              
                     });
                     
                     const savedEvent = await newEvent.save();

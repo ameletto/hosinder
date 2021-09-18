@@ -4,6 +4,7 @@ import HandwrittenButton from "./HandwrittenButton";
 import Input from "./Input";
 import Modal from "./Modal";
 import Select from "react-select";
+import H3 from "./H3";
 
 const CreateEventModal = ({isOpen, setIsOpen, schoolId, iter, setIter}: {
     isOpen: boolean,
@@ -64,21 +65,8 @@ const CreateEventModal = ({isOpen, setIsOpen, schoolId, iter, setIter}: {
                 value={name}
                 setValue={setName}
                 placeholder="HOSA Bowl"
-            />
-            <Input 
-                type="textarea"
-                name="Description (optional)"
-                value={description}
-                setValue={setDescription}
-                placeholder="Unfortunately, this is not a bowl of HOSA swag."
-            />
-            <Input 
-                type="text"
-                name="Image URL (optional)"
-                value={image}
-                setValue={setImage}
-                placeholder="https://upload.wikimedia.org/wikipedia/en/d/dc/MGCI_Emblem2.png"
-            />
+            />            
+            <H3>Tags (optional)</H3>
             <Select
                 isMulti
                 options = {[
@@ -101,18 +89,34 @@ const CreateEventModal = ({isOpen, setIsOpen, schoolId, iter, setIter}: {
                 ]}
                 onChange={newSelectedOptions => setLabels(newSelectedOptions.map(option => option.value))}
                 isDisabled={isLoading}
-                className="w-full"
+                className="w-full my-2 py-2"
+            />
+            <Input 
+                type="textarea"
+                name="Description (optional)"
+                value={description}
+                setValue={setDescription}
+                placeholder="Unfortunately, this is not a bowl of HOSA swag."
+            />
+            <Input 
+                type="text"
+                name="Image URL (optional)"
+                value={image}
+                setValue={setImage}
+                placeholder="https://upload.wikimedia.org/wikipedia/en/d/dc/MGCI_Emblem2.png"
             />
             {error && (
                 <p className="text-red-500">{error}</p>
             )}
-            <HandwrittenButton
-                // isLoading={isLoading}
-                onClick={onSubmit}
-                disabled={isLoading || name.length === 0}
-            >
-                Create event!
-            </HandwrittenButton>
+            <div className="my-4">
+                <HandwrittenButton
+                    // isLoading={isLoading}
+                    onClick={onSubmit}
+                    disabled={isLoading || name.length === 0}
+                >
+                    Create event!
+                </HandwrittenButton>
+            </div>
         </Modal>
     )
 }
