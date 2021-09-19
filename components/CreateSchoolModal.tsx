@@ -15,6 +15,7 @@ const CreateSchoolModal = ({isOpen, setIsOpen, userId, setSchoolId}: {
     const [image, setImage ] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>(null);
+    const [isExec, setIsExec] = useState<boolean>(false);
     console.log(name, encodeURIComponent(name))
 
     function onSubmit() {
@@ -69,14 +70,20 @@ const CreateSchoolModal = ({isOpen, setIsOpen, userId, setSchoolId}: {
                 setValue={setImage}
                 placeholder="https://upload.wikimedia.org/wikipedia/en/d/dc/MGCI_Emblem2.png"
             />
+            <div className="my-2 py-2 flex items-center">
+                <input type="checkbox" id="isExec" onChange={e => setIsExec(e.target.checked)} className="cursor-pointer"/>
+                <label htmlFor="isExec" className="cursor-pointer ml-2">
+                    I confirm I am a executive member of {name}'s HOSA chapter 
+                    or have otherwise received permission to register {name} on HOSA Tinder.
+                </label>
+            </div>
             {error && (
                 <p className="text-red-500">{error}</p>
             )}
-            {/* I confirm I am an exec. */}
             <HandwrittenButton
-                // isLoading={isLoading}
+                isLoading={isLoading}
                 onClick={onSubmit}
-                disabled={isLoading || name.length === 0}
+                disabled={isLoading || name.length === 0 || !isExec}
             >
                 Create school!
             </HandwrittenButton>

@@ -19,13 +19,13 @@ export default function NewAccount({ }: {}) {
     const router = useRouter();
     const [session, loading] = useSession();
     const [grade, setGrade] = useState<number>(0);
-    const [school, setSchool] = useState<string>("");
+    const [school, setSchool] = useState<string>("61216845561457369cdd35ae"); // defaulting everyone to mgci for now.
     const [labels, setLabels] = useState<string[]>([]);
     const [prevEvents, setPrevEvents] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>(null);
 
-    const {data: schoolData, error: schoolError}: SWRResponse<{data: DatedObj<SchoolObj>[]}, any> = useSWR(`/api/school`, fetcher);
+    // const {data: schoolData, error: schoolError}: SWRResponse<{data: DatedObj<SchoolObj>[]}, any> = useSWR(`/api/school`, fetcher);
     const {data: eventsData, error: eventsError}: SWRResponse<{data: DatedObj<EventObj>[]}, any> = useSWR(`/api/event`, fetcher);
 
     function onSubmit() {
@@ -111,7 +111,7 @@ export default function NewAccount({ }: {}) {
             <H2 className="flex justify-center items-center p-4 oswald font-bold text-xl">School:</H2>
             <div className="flex items-center">
 
-                <Select 
+                {/* <Select 
                     options={schoolData && schoolData.data && schoolData.data.map(s => ({
                         value: s._id,
                         label: s.name,
@@ -119,12 +119,11 @@ export default function NewAccount({ }: {}) {
                     onChange={option => setSchool(option.value)}
                     isDisabled={isLoading}
                     className="w-full"
-                />
+                /> */}
                 {/* <p>Don't see your school? Tell your execs to create a school.<br/>Or, continue without one.</p> */}
             </div>
             <div className="flex justify-center items-center p-4 oswald font-bold text-xl">
                 <label>Previous HOSA events:</label>
-                {/* TODO: multi select */}
                 <Select 
                     isMulti
                     options={eventsData && eventsData.data && eventsData.data.map(event => ({

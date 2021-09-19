@@ -26,9 +26,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 const id = mongoose.Types.ObjectId(`${req.query.id}`);
                 
                          
-                await dbConnect();  
-
-
+                await dbConnect();
             
                 // return res.status(200).json({data: cleanForJSON(school)});
                 // get all schools that id = req.query.id
@@ -82,11 +80,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     
                     return res.status(200).json({message: "Object updated"});                            
                 } else {
-                    if (!(req.body.name)) {
-                        return res.status(406);            
-                    }
 
                     if (!(req.body.admin)) return res.status(406).send("Missing admin");
+                    if (!(req.body.name)) return res.status(406).send("Missing name");
                     
                     const newSchool = new SchoolModel({
                         name: req.body.name,
@@ -117,7 +113,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 const thisObject = await SchoolModel.findById(req.body.id);
                 
                 if (!thisObject) return res.status(404);
-                if (thisObject.userId.toString() !== session.userId) return res.status(403);
+                if (!thisObject.admin.includes(session.userId)) return res.status(403).json({message: "You do not have permission to delete this school."});
                 
                 await SchoolModel.deleteOne({_id: req.body.id});
                 
