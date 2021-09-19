@@ -20,25 +20,6 @@ export default function App(props: { thisUser: DatedObj<UserObj> }) {
     console.log(props.thisUser)
     const { data: eventData, error: eventError }: SWRResponse<{ data: DatedObj<EventObj>[] }, any> = useSWR(`/api/event?school=${props.thisUser.school || "61216845561457369cdd35ae"}`, fetcher);
     const[i, setI] = useState<number>(0);
-<<<<<<< HEAD
-    const [preferredEvents, setPreferred] = useState([]);
-    const preferredEvents = preferredEvents.concat({ name, id: uuidv4() });
-
-    return (
-        <Container>
-            <Button onClick={() => setI(i+1); () => setPreferred(preferredEvents[]);}>
-                <img src="/frown.png"></img>
-                <p>{i}</p>
-                </Button>
-            <Button onClick={() => setI(i+1)}>
-                <img src="/smile.png"></img>
-                <p>{i}</p>
-            </Button>
-        {eventData ? <EventCard
-            index={i}
-            eventData={eventData}
-        />:<p>Loading...</p>}
-=======
 
     function onAccept(eventId: string) {
         axios.post("/api/user", { preferredEvents: [...props.thisUser.preferredEvents, eventId]})
@@ -72,7 +53,6 @@ export default function App(props: { thisUser: DatedObj<UserObj> }) {
                     <p className="font-semibold text-center">interested - swipe right</p>
                 </Button>
             </div>:<p>Loading...</p>}
->>>>>>> e82d9064e9ab76a3d7d931d96a0877f5d2d08b26
         </Container>
         
     );
