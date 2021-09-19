@@ -30,12 +30,11 @@ const admin = (props: { thisUser: DatedObj<UserObj>, thisSchool: DatedObj<School
     const [error, setError] = useState<string>(null);
     
     const {data: schoolData, error: schoolError}: SWRResponse<{data: DatedObj<SchoolObjGraph>}, any> = useSWR(`/api/school?id=${props.thisSchool._id}&iter=${iter}`, fetcher);
-    const {data: studentsData, error: studentsError}: SWRResponse<{data: DatedObj<UserObj>[]}, any> = useSWR(`/api/user?school=${props.thisSchool._id}&removeAdmins=${false}`, fetcher);
+    const {data: studentsData, error: studentsError}: SWRResponse<{data: DatedObj<UserObj>[]}, any> = useSWR(`/api/user?school=${props.thisSchool._id}&removeAdmins=${true}`, fetcher);
     if (studentsData && studentsData.data) console.table([...studentsData.data, props.thisUser])
 
     function onAddAdmin() {
         setIsLoading(true);
-        console.log("is submitting")
 
         axios.post("/api/school", {
             id: props.thisSchool._id,
@@ -64,7 +63,7 @@ const admin = (props: { thisUser: DatedObj<UserObj>, thisSchool: DatedObj<School
 
             <div className="mb-8">
                 <div className="flex">
-                    <H2 className="mb-4">Your events:</H2>
+                    <H2 className="mb-4">All events:</H2>
                     <div className="ml-auto"><HandwrittenButton onClick={() => setIsCreateEvent(true)} arrowRightOnHover={false}>
                         <div className="flex items-center">
                             <FaPlus/><span className="ml-2">New event</span>
@@ -72,20 +71,20 @@ const admin = (props: { thisUser: DatedObj<UserObj>, thisSchool: DatedObj<School
                     </HandwrittenButton></div>
                 </div>
                 <CreateEventModal isOpen={isCreateEvent} setIsOpen={setIsCreateEvent} schoolId={props.thisSchool._id} iter={iter} setIter={setIter}/>
-                <div className="flex gap-8">
+                <div className="flex gap-8 flex-wrap overflow-hidden">
                     {(schoolData && schoolData.data) && schoolData.data.eventsArr.length > 0 ? schoolData.data.eventsArr.map(event => (
                         // Grid of events
-                        <EventCard event={event}/>
+                        <EventCard event={event} wide={false}/>
                     )) : <p>No events yet. Create an event so your students can start tinder-matching themselves to 'em ;)</p>}
                 </div>
             </div>
 
             <div>
                 <div className="flex">
-                    <H2 className="mb-4">Your admins:</H2>
+                    <H2 className="mb-4">{`${props.thisSchool.name}'s admins:`}</H2>
                     <div className="ml-auto"><HandwrittenButton onClick={() => setIsAddAdmin(true)} arrowRightOnHover={false}>
                         <div className="flex items-center">
-                            <FaPlus/><span className="ml-2">Add an admin</span>
+                            <FaPlus/><span className="ml-2">Add admins</span>
                         </div>
                     </HandwrittenButton></div>
                 </div>
@@ -121,7 +120,7 @@ const admin = (props: { thisUser: DatedObj<UserObj>, thisSchool: DatedObj<School
                     {error && (
                         <p className="text-red-500">{error}</p>
                     )}
-                    <HandwrittenButton onClick={onAddAdmin}>Add</HandwrittenButton>
+                    <div className="mt-10 mb-2"><HandwrittenButton onClick={onAddAdmin} py={3}>Add</HandwrittenButton></div>
                 </Modal>
             </div>
 

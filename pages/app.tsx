@@ -38,10 +38,10 @@ export default function App(props: { thisUser: DatedObj<UserObj> }) {
         }).catch(e => console.log(e))
         .finally(() => setI(i+1));
     }
-    if (eventData && eventData.data.length > i) router.push("/dashboard")
+    // if (eventData && eventData.data.length > i) router.push("/dashboard")
 
     return (
-        <Container>
+        <Container width="7xl">
             {eventData && eventData.data.length > i ? <div className="flex gap-14 items-center justify-center" style={{height: "calc(100vh - 72px)"}}> {/* subtract height of navbar */}                
                 <Button onClick={() => onReject(eventData.data[i]._id)}>
                     <img src="/frown.png" className="mx-auto"></img>

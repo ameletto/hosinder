@@ -12,7 +12,6 @@ import axios from "axios";
 import { useState } from "react";
 import HandwrittenButton from "../components/HandwrittenButton";
 import Modal from "../components/Modal";
-import Button from "../components/Button";
 
 // TODO: allow admin of school to see all submissions.
 // TODO: congratulatory page for submitting events, maybe go to social media page of all submissions? 
@@ -20,6 +19,7 @@ import Button from "../components/Button";
 const dashboard = (props: {thisUser: DatedObj<UserObj>, preferredEvents: DatedObj<EventObj>[]}) => {
     const [preferredEvents, setPreferredEvents] = useState<DatedObj<EventObj>[]>(props.preferredEvents);
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const handleOnDragEnd = (result) => {
         // result is array of EventObjs in the order of the drag & drop.
@@ -40,14 +40,18 @@ const dashboard = (props: {thisUser: DatedObj<UserObj>, preferredEvents: DatedOb
     }
 
     const onSubmit = () => {
+        setIsLoading(true);
         axios.post("/api/submission", {
             user: props.thisUser._id,
             top3events: [preferredEvents[0], preferredEvents[1], preferredEvents[2]], // more elegant way to do this
         }).then(res => {
-            console.log("you have submitted your top 3 events!", res.data)
+            console.log("you have submitted your top 3 events!", res.data);
         })
         .catch(e => {console.log(e)})
-        .finally(() => setIsSubmitting(false));
+        .finally(() => {
+            setIsLoading(false);
+            setIsSubmitting(false);
+        });
     }
 
     return (
@@ -79,10 +83,10 @@ const dashboard = (props: {thisUser: DatedObj<UserObj>, preferredEvents: DatedOb
             </DragDropContext>
             <HandwrittenButton onClick={() => setIsSubmitting(true)} disabled={!preferredEvents}>Submit!</HandwrittenButton>
             <Modal isOpen={isSubmitting} setIsOpen={setIsSubmitting}>
-                <p>Are you sure you want to submit your events? Please make sure you are 100% sure about your top 3 choices, as this action cannot be undone.</p>
+                <p>Are you sure you want to submit your events? Please confirm you are 100% sure about your top 3 choices, as this action cannot be undone.</p>
                 <div className="flex gap-2">
-                    <HandwrittenButton onClick={onSubmit}>Submit</HandwrittenButton>
-                    <Button onClick={() => setIsSubmitting(false)}>Cancel</Button>
+                    <HandwrittenButton onClick={onSubmit} isLoading={isLoading}>Submit</HandwrittenButton>
+                    <HandwrittenButton onClick={() => setIsSubmitting(false)}>Cancel</HandwrittenButton>
                 </div>
             </Modal>
         </Container>
