@@ -19,19 +19,25 @@ export default function App(props: { thisSchool: DatedObj<SchoolObj> }) {
     console.log(eventData);
     console.log(eventError);
     const[i, setI] = useState<number>(0);
+    const [preferredEvents, setPreferred] = useState([]);
+    const preferredEvents = preferredEvents.concat({ name, id: uuidv4() });
+
     return (
         <Container>
-            <Button onClick={() => setI(i+1)}>
+            <Button onClick={() => setI(i+1); () => setPreferred(preferredEvents[]);}>
                 <img src="/frown.png"></img>
+                <p>{i}</p>
                 </Button>
             <Button onClick={() => setI(i+1)}>
                 <img src="/smile.png"></img>
+                <p>{i}</p>
             </Button>
         {eventData ? <EventCard
             index={i}
             eventData={eventData}
         />:<p>Loading...</p>}
         </Container>
+        
     );
 }
 
