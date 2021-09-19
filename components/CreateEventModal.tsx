@@ -3,6 +3,8 @@ import React, { Dispatch, SetStateAction, useState } from "react";
 import HandwrittenButton from "./HandwrittenButton";
 import Input from "./Input";
 import Modal from "./Modal";
+import Select from "react-select";
+import H3 from "./H3";
 
 const CreateEventModal = ({isOpen, setIsOpen, schoolId, iter, setIter}: {
     isOpen: boolean,
@@ -14,6 +16,7 @@ const CreateEventModal = ({isOpen, setIsOpen, schoolId, iter, setIter}: {
     const [name, setName] = useState<string>("");
     const [description, setDescription ] = useState<string>("");
     const [image, setImage ] = useState<string>("");
+    const [labels, setLabels] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>(null);
 
@@ -26,6 +29,7 @@ const CreateEventModal = ({isOpen, setIsOpen, schoolId, iter, setIter}: {
             school: schoolId,
             description: description,
             image: image,
+            labels: labels,
         }).then(res => {
             if (res.data.error) {
                 setError(res.data.error);
@@ -35,8 +39,12 @@ const CreateEventModal = ({isOpen, setIsOpen, schoolId, iter, setIter}: {
                 console.log(res.data);
                 setIter(iter + 1);
                 setIsLoading(false);
+
+                // Reset
                 setName("");
                 setDescription("");
+                setImage("");
+                setLabels([]);
                 setIsOpen(false);
             }
         }).catch(e => {
@@ -57,9 +65,34 @@ const CreateEventModal = ({isOpen, setIsOpen, schoolId, iter, setIter}: {
                 value={name}
                 setValue={setName}
                 placeholder="HOSA Bowl"
+            />            
+            <H3>Tags (optional)</H3>
+            <Select
+                isMulti
+                options = {[
+                    {
+                        label: "Individual",
+                        value: "individual"
+                    },
+                    {
+                        label: "Team",
+                        value: "team"
+                    },
+                    {
+                        label: "Knowledge test",
+                        value: "KT"
+                    },
+                    {
+                        label: "Skill performance",
+                        value: "skill"
+                    },
+                ]}
+                onChange={newSelectedOptions => setLabels(newSelectedOptions.map(option => option.value))}
+                isDisabled={isLoading}
+                className="w-full my-2 py-2"
             />
             <Input 
-                type="text"
+                type="textarea"
                 name="Description (optional)"
                 value={description}
                 setValue={setDescription}
@@ -75,13 +108,15 @@ const CreateEventModal = ({isOpen, setIsOpen, schoolId, iter, setIter}: {
             {error && (
                 <p className="text-red-500">{error}</p>
             )}
-            <HandwrittenButton
-                // isLoading={isLoading}
-                onClick={onSubmit}
-                disabled={isLoading || name.length === 0}
-            >
-                Create event!
-            </HandwrittenButton>
+            <div className="my-4">
+                <HandwrittenButton
+                    // isLoading={isLoading}
+                    onClick={onSubmit}
+                    disabled={isLoading || name.length === 0}
+                >
+                    Create event!
+                </HandwrittenButton>
+            </div>
         </Modal>
     )
 }

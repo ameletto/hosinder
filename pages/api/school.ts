@@ -67,16 +67,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 await dbConnect();
                 
                 if (req.body.id) {
-                    if (!(req.body.name || req.body.admin)) {
-                        return res.status(406);            
-                    }
                     const thisObject = await SchoolModel.findById(req.body.id);
                     if (!thisObject) return res.status(404);
+                    if (!(req.body.name || req.body.description || req.body.image || req.body.admin)) {
+                        return res.status(406);            
+                    }                       
                     
-                    thisObject.name = req.body.name;
-                    thisObject.admin = req.body.admin;
-                    thisObject.description = req.body.description;
-                    thisObject.image = req.body.image;
+                    if (req.body.name) thisObject.name = req.body.name;
+                    if (req.body.description) thisObject.description = req.body.description;
+                    if (req.body.image) thisObject.image = req.body.image;
+                    if (req.body.admin) thisObject.admin = req.body.admin;
                     
                     await thisObject.save();
                     

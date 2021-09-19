@@ -18,6 +18,11 @@ export interface EventObj {
     image?: string; 
 }
 
+export interface SubmissionObj {
+    user: string; 
+    top3events: string[]; 
+}
+
 export interface SchoolObj {
     name: string; 
     admin: string[];  // Object ID

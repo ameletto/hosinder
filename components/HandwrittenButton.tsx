@@ -3,17 +3,18 @@ import { FaArrowRight } from "react-icons/fa";
 import Button from "./Button";
 
 
-const HandwrittenButton = ({onClick, children, disabled, arrowRightOnHover = true} : {
-    onClick?: any,
+const HandwrittenButton = ({onClick, children, disabled, arrowRightOnHover = true, isLoading} : {
+    onClick: () => any,
     children: string | ReactNode, 
     disabled?: boolean,
     arrowRightOnHover?: boolean,
+    isLoading?: boolean, 
 }) => {
     const [isShown, setIsShown] = useState(false);
     // hover:bg-white border hover:border-transparent border-white  
     return (
         <div 
-            className = "mb-2" 
+            className="relative inline-block"
             onMouseEnter={() => setIsShown(true)}
             onMouseLeave={() => setIsShown(false)}
         >
@@ -28,6 +29,7 @@ const HandwrittenButton = ({onClick, children, disabled, arrowRightOnHover = tru
                     {/* {isShown && <img src="/scribble.png" width={150} className="relative left-0 mx-auto" style={{zIndex: -1}}/>} */}
                 </div>
             </Button>
+            {isLoading && <div className="up-spinner"/>}
         </div>
     )
 }

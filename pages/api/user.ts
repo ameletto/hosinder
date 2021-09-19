@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/client";
 import { SchoolModel } from "../../models/School";
 import { UserModel } from "../../models/User";
+import cleanForJSON from "../../utils/cleanForJSON";
 import dbConnect from "../../utils/dbConnect";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -45,18 +46,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         case "POST": {
             const session = await getSession({req});
             if (!session) return res.status(403).send("Unauthed");
-            if (!req.body.grade || !req.body.school) return res.status(406).send("Missing grade or school");
+            if (!(req.body.grade || req.body.school || req.body.preferredEvents || req.body.notWantedEvents)) return res.status(406).send("Missing grade or school");
             
             try {
                 await dbConnect();
 
                 const user = await UserModel.findOne({email: session.user.email})
-                user.grade = req.body.grade
-                user.school = req.body.school
+                if (req.body.grade) user.grade = req.body.grade
+                if (req.body.school) user.school = req.body.school
+                if (req.body.preferredEvents) user.preferredEvents = req.body.preferredEvents
+                if (req.body.preferredEvents) user.markModified("preferredEvents");
+                if (req.body.notWantedEvents) user.notWantedEvents = req.body.notWantedEvents
+
                 await user.save();
 
 
-                return res.status(200).json({message: "Object saved"});
+                return res.status(200).json({message: "Object saved", user: cleanForJSON(user)});
             } catch (e) {
                 return res.status(500).json({message: e});
             }

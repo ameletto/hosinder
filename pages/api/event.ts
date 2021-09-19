@@ -8,9 +8,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         case "GET": {
             const session = await getSession({ req });
             if (!session) return res.status(403);
-            if (!(req.query.school || req.query.name || req.query.description || req.query.labels || req.query.image)) {
-                return res.status(406);                        
-            }
 
             const mongoose = require('mongoose');
 
@@ -52,10 +49,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     const thisObject = await EventModel.findById(req.body.id);
                     if (!thisObject) return res.status(404);
                     
-                    thisObject.name = req.body.name;
-                    thisObject.description = req.body.description;
-                    thisObject.labels = req.body.labels;
-                    thisObject.image = req.body.image;
+                    if (req.body.name) thisObject.name = req.body.name;
+                    if (req.body.description) thisObject.description = req.body.description;
+                    if (req.body.labels) thisObject.labels = req.body.labels;
+                    if (req.body.image) thisObject.image = req.body.image;
                     
                     await thisObject.save();
                     
@@ -70,7 +67,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         description: req.body.description,
                         school: req.body.school,
                         labels: req.body.labels || [],
-                        image: req.body.image || "",                             
+                        image: req.body.image || "",              
                     });
                     
                     const savedEvent = await newEvent.save();

@@ -1,13 +1,12 @@
 import { DatedObj, EventObj, SchoolObj } from "../utils/types";
 
-const EventCard = ({index, eventData} : {index: number, eventData: {data: DatedObj<EventObj>}}) => {
+const EventCard = ({event} : {event: DatedObj<EventObj>}) => {
     return (
-        <div className="flex items-center justify-center h-screen">
-            <div className="max-w-7xl border-dashed border-8 border-black rounded-lg work-sans">
-                <p className="flex items-center justify-center text-5xl p-4">{eventData.data[index].name}</p>
-                <p className="flex items-center justify-center text-xl p-4">{eventData.data[index].description}</p>
-                <p className="flex items-center justify-center text-xl p-4">{eventData.data[index].labels}</p>
-            </div>
+        <div className="max-w-7xl border-dashed border-black rounded-lg work-sans p-4 bg-white" style={{borderWidth: 6}}>
+            <p className="text-center text-5xl p-4 font-bold">{event.name}</p>
+            {event.image && <img src={event.image} alt={`Image of ${event.name}`}/>}
+            <p className="text-center text-xl p-4">{event.description}</p>
+            {event.labels.map(label => <p className="text-center p-2 text-sm m-2 border-2 border-blue-300 rounded-full">{label}</p>)}
         </div>
     )
 }
