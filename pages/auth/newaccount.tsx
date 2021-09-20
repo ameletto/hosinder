@@ -77,7 +77,7 @@ export default function NewAccount({ }: {}) {
         <Container width="7xl">
             <SEO title="New account" />
             <div className="mb-6">
-                <h1 className="text-2xl font-semibold raleway text-4xl text-center">Tell us about yourself</h1>
+                <H1>Tell us about yourself</H1>
                 <div className="flex justify-center"><div className="-mt-3 ml-10 border-primary" style={{borderBottomWidth: 10, width: 360, zIndex: -1}}></div></div>
             </div>
             <CuteGradientCircle className="w-16 h-16 fixed left-10 top-16"/>

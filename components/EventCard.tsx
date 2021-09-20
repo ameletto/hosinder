@@ -16,7 +16,12 @@ const EventCard = ({event, wide=true} : {event: DatedObj<EventObj>, wide?: boole
         <div className={`border-dashed border-black rounded-lg raleway p-4 bg-white ${wide ? "w-96 md:w-150" : "w-72"}`} style={{borderWidth: wide ? 6 : 4}}>
             <p className="text-center mx-4 mt-4 font-bold" style={{fontSize: wide ? 40 : 20}}>{event.name}</p>
             <div className="flex">
-                {event.labels.map(label => <p className="text-center p-2 text-sm m-2 border-2 border-blue-300 rounded-full">{label == "KT" ? "knowledge test" : label}</p>)}
+                {event.labels.map((label, index) => <p 
+                    key={label} 
+                    className={`text-center p-2 text-sm m-2 border-2 rounded-full ${index % 2 === 0 ? "border-primary" : "border-secondary"}`}
+                >
+                    {label == "KT" ? "knowledge test" : label}
+                </p>)}
             </div>
             {event.image && <img src={event.image} alt={`Image of ${event.name}`}/>}
             <div className={`p-4 raleway ${wide && "text-xl"}`}>{Parser(markdownConverter.makeHtml(event.description))}</div>
