@@ -7,6 +7,7 @@ import Skeleton from "react-loading-skeleton";
 import Select from "react-select";
 import useSWR, { SWRResponse } from "swr";
 import Container from "../../components/Container";
+import CuteGradientCircle from "../../components/CuteGradientCircle";
 import H1 from "../../components/H1";
 import H2 from "../../components/H2";
 import HandwrittenButton from "../../components/HandwrittenButton";
@@ -79,9 +80,9 @@ export default function NewAccount({ }: {}) {
                 <h1 className="text-2xl font-semibold raleway text-4xl text-center">Tell us about yourself</h1>
                 <div className="flex justify-center"><div className="-mt-3 ml-10 border-primary" style={{borderBottomWidth: 10, width: 360, zIndex: -1}}></div></div>
             </div>
-            <div className="h-16 w-16 rounded-full fixed left-10 top-16" style={{ background: "radial-gradient(rgba(183,225,252,1) 30%, rgba(212,208,254,0.5) 60%, rgba(255,255,255,0) 100%)", zIndex: -10}}></div>
-            <div className="h-16 w-16 rounded-full fixed right-10 top-48" style={{ background: "radial-gradient(rgba(183,225,252,1) 30%, rgba(212,208,254,0.5) 60%, rgba(255,255,255,0) 100%)", zIndex: -10}}></div>
-            <div className="h-16 w-16 rounded-full fixed left-48 bottom-16" style={{ background: "radial-gradient(rgba(183,225,252,1) 30%, rgba(212,208,254,0.5) 60%, rgba(255,255,255,0) 100%)", zIndex: -10}}></div>
+            <CuteGradientCircle className="w-16 h-16 fixed left-10 top-16"/>
+            <CuteGradientCircle className="w-16 h-16 fixed right-10 top-48"/>
+            <CuteGradientCircle className="w-16 h-16 fixed left-48 bottom-16"/>
                 
             {loading ? (
                 <Skeleton count={2} />
