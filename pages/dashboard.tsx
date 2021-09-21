@@ -123,7 +123,17 @@ export default function dashboard(props: {thisUser: DatedObj<UserObj>, preferred
             for (let id of [source.droppableId, destination.droppableId]) tempEvents[Number(id.substring(10))] = result[id]
             
         }
-        setPreferredEvents(renderedEventsToFlatList(tempEvents));
+        tempEvents = renderedEventsToFlatList(tempEvents)
+        
+        axios.post("/api/user", {
+            id: props.thisUser._id,
+            preferredEvents: tempEvents.map(event => event._id),
+        }).then(res => {
+            props.thisUser.preferredEvents = res.data.user.preferredEvents
+        })
+        .catch(e => {console.log(e)});
+
+        setPreferredEvents(tempEvents);
 
     };
     const onSubmit = () => {
