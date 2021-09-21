@@ -57,7 +57,7 @@ const CreateEventModal = ({isOpen, setIsOpen, schoolId, iter, setIter}: {
     return (
         <Modal
             isOpen={isOpen}
-            setIsOpen={setIsOpen}
+            onRequestClose={() => setIsOpen(false)}
         >
             <Input 
                 type="text"
