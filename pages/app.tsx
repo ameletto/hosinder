@@ -25,18 +25,22 @@ export default function App(props: { thisUser: DatedObj<UserObj> }) {
         axios.post("/api/user", { preferredEvents: [...props.thisUser.preferredEvents.filter(e => e !== eventId), eventId]})
         .then(res => {
             if (res.data.error) console.log("you are a failure ", res.data.error) 
-            else props.thisUser.preferredEvents = res.data.user.preferredEvents
+            else {
+                props.thisUser.preferredEvents = res.data.user.preferredEvents;
+                setI(i+1);
+            }
         }).catch(e => console.log(e))
-        .finally(() => setI(i+1));
     }
 
     function onReject(eventId: string) {
         axios.post("/api/user", { notWantedEvents: [...props.thisUser.notWantedEvents.filter(e => e !== eventId), eventId]})
         .then(res => {
             if (res.data.error) console.log("you are a failure ", res.data.error) 
-            else props.thisUser.notWantedEvents = res.data.user.notWantedEvents
+            else {
+                props.thisUser.notWantedEvents = res.data.user.notWantedEvents;
+                setI(i+1);
+            }
         }).catch(e => console.log(e))
-        .finally(() => setI(i+1));
     }
     // if (eventData && eventData.data.length > i) router.push("/dashboard")
 

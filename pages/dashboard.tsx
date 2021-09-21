@@ -124,7 +124,7 @@ export default function dashboard(props: {thisUser: DatedObj<UserObj>, preferred
             
         }
         tempEvents = renderedEventsToFlatList(tempEvents)
-        
+
         axios.post("/api/user", {
             id: props.thisUser._id,
             preferredEvents: tempEvents.map(event => event._id),
@@ -143,12 +143,10 @@ export default function dashboard(props: {thisUser: DatedObj<UserObj>, preferred
             top3events: [preferredEvents[0], preferredEvents[1], preferredEvents[2]], // more elegant way to do this
         }).then(res => {
             console.log("you have submitted your top 3 events!", res.data);
+            setIsSubmitting(false);
         })
         .catch(e => {console.log(e)})
-        .finally(() => {
-            setIsLoading(false);
-            setIsSubmitting(false);
-        });
+        .finally(() =>  setIsLoading(false));
     }
 
     return (
