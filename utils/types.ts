@@ -8,6 +8,7 @@ export interface UserObj {
     previousEvents?: string[], // Object ID
     preferredEvents?: string[], // Object ID
     notWantedEvents?: string[], // Object ID
+    top3Events?: string[], // Object ID
 }
 
 export interface EventObj {

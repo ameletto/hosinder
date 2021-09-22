@@ -18,7 +18,7 @@ export default function Navbar() {
                         <img
                             src={session.user.image}
                             alt={`Profile picture of ${session.user.name}`}
-                            className="w-8 h-8 rounded-full"
+                            className="w-10 h-10 rounded-full"
                         />
                         </>
                     ) : (

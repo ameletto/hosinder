@@ -11,6 +11,7 @@ const UserSchema = new mongoose.Schema({
     previousEvents: { required: false, type: [mongoose.Schema.Types.ObjectId] },
     preferredEvents: { required: false, type: [mongoose.Schema.Types.ObjectId] },
     notWantedEvents: { required: false, type: [mongoose.Schema.Types.ObjectId] },
+    top3Events: {required: false, type: [mongoose.Schema.Types.ObjectId]}, // top3Events includes preferredEvents and are in order.
 }, {
     timestamps: true,
 });

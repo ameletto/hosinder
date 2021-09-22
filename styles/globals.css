@@ -8,7 +8,17 @@
 
 .primary {color: #B7E1FC;}
 
-.bg-primary {background-color: #B7E1FC;}
+@layer base {
+    .bg-primary {
+        background-color: #B7E1FC;
+    }
+  
+    @variants hover {
+      .bg-primary {
+        background-color: #B7E1FC;
+      }
+    }
+  }
 
 .border-primary {border-color: #B7E1FC;}
 .border-secondary {border-color: #D4D0FE;}

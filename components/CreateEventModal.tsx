@@ -115,7 +115,7 @@ const CreateEventModal = ({isOpen, setIsOpen, schoolId, iter, setIter}: {
                 <HandwrittenButton
                     // isLoading={isLoading}
                     onClick={onSubmit}
-                    disabled={isLoading || name.length === 0}
+                    disabled={isLoading || name.length === 0 || description.length === 0}
                 >
                     Create event!
                 </HandwrittenButton>
