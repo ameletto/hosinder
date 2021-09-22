@@ -142,7 +142,7 @@ export default function App(props: { thisUser: DatedObj<UserObj> }) {
           <div className="flex gap-14 items-center justify-center">
             <DragDropContext
               onDragEnd={function (result) {
-                // dropped outside the list
+                // dropped outside the 3 draggables
                 if (!result.destination) return;
                 if (result["destination"]["droppableId"] == "frown") {
                   onReject(eventData.data[i]._id);

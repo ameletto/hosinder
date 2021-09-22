@@ -259,7 +259,7 @@ export default function dashboard(props: {thisUser: DatedObj<UserObj>, preferred
                 <H3 className="mb-2">Submit top 3 events</H3>
                 <p>Are you sure you want to submit your events? Please confirm you are 100% sure about your top 3 choices:</p>
                 <ul className="my-4 text-gray-500">
-                    {preferredEvents && preferredEvents.map((event, index) => index < 3 && <li key={event._id} className="ml-2 my-2">• {event.name}</li>)}
+                    {top3Events && top3Events.map((event, index) => <li key={event._id} className="ml-2 my-2">• {event.name}</li>)}
                 </ul>
                 <p>This action cannot be undone.</p>
                 <div className="flex gap-4 mt-10 mb-4 justify-center">
