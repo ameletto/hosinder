@@ -57,7 +57,7 @@ const CreateEventModal = ({isOpen, setIsOpen, schoolId, iter, setIter}: {
     return (
         <Modal
             isOpen={isOpen}
-            setIsOpen={setIsOpen}
+            onRequestClose={() => setIsOpen(false)}
         >
             <Input 
                 type="text"
@@ -98,6 +98,9 @@ const CreateEventModal = ({isOpen, setIsOpen, schoolId, iter, setIter}: {
                 setValue={setDescription}
                 placeholder="Unfortunately, this is not a bowl of HOSA swag."
             />
+            <p className="text-gray-400 text-sm -mt-8">
+                You can use markdown like **bold**, *italic*, [link text](https://your-url.com/), and ~~strikethrough~~. <a href="https://www.markdownguide.org/basic-syntax/" className="underline">Full markdown guide</a>
+            </p>
             <Input 
                 type="text"
                 name="Image URL (optional)"

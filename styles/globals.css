@@ -5,17 +5,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Oswald&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&family=Work+Sans:wght@800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Raleway:wght@400;700&family=Work+Sans:wght@800&display=swap');
-.primary {
-    color: "#B7E1FC";
-}
 
-.bg-primary {
-    background-color: "#B7E1FC";
-}
+.primary {color: #B7E1FC;}
 
-.border-primary {
-    border-color: "#B7E1FC";
-}
+.bg-primary {background-color: #B7E1FC;}
+
+.border-primary {border-color: #B7E1FC;}
+.border-secondary {border-color: #D4D0FE;}
 
 .bg-scribble-hover:hover {
     background-image: url("/scribble.png");
@@ -23,9 +19,7 @@
 }
 
 @responsive {
-    .w-150 {
-        width: 600px;
-    }
+    .w-150 {width: 600px;}
 }
 
 .up-spinner {
@@ -53,7 +47,7 @@
     font-family: 'Work Sans';
 }
 
-.raleway {
+body, .raleway {
     font-family: 'Raleway';
 }
 

@@ -47,7 +47,7 @@ const CreateSchoolModal = ({isOpen, setIsOpen, userId, setSchoolId}: {
     return (
         <Modal
             isOpen={isOpen}
-            setIsOpen={setIsOpen}
+            onRequestClose={() => setIsOpen(false)}
         >
             <Input 
                 type="text"

@@ -2,10 +2,12 @@ import axios from "axios";
 import { GetServerSideProps } from "next";
 import { getSession, useSession } from "next-auth/client";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import Select from "react-select";
 import useSWR, { SWRResponse } from "swr";
+import Container from "../../components/Container";
+import CuteGradientCircle from "../../components/CuteGradientCircle";
 import H1 from "../../components/H1";
 import H2 from "../../components/H2";
 import HandwrittenButton from "../../components/HandwrittenButton";
@@ -72,13 +74,20 @@ export default function NewAccount({ }: {}) {
     }
 
     return (
-        <>
+        <Container width="7xl">
             <SEO title="New account" />
-            <H1 className="raleway text-4xl underline text-center p-2">Tell us about yourself</H1>
+            <div className="mb-6">
+                <H1>Tell us about yourself</H1>
+                <div className="flex justify-center"><div className="-mt-3 ml-10 border-primary" style={{borderBottomWidth: 10, width: 360, zIndex: -1}}></div></div>
+            </div>
+            <CuteGradientCircle className="w-16 h-16 fixed left-10 top-16"/>
+            <CuteGradientCircle className="w-16 h-16 fixed right-10 top-48"/>
+            <CuteGradientCircle className="w-16 h-16 fixed left-48 bottom-16"/>
+                
             {loading ? (
                 <Skeleton count={2} />
             ) : (
-                <div className="flex justify-center p-4 oswald font-bold">
+                <div className="flex flex-col justify-center md:flex-row p-4 oswald">
                     <img
                         src={session.user.image}
                         alt={`Profile picture of ${session.user.name}`}
@@ -90,26 +99,22 @@ export default function NewAccount({ }: {}) {
                     </div>
                 </div>
             )}
-            <div className="flex justify-center items-center p-4 oswald font-bold text-xl">
-                <H2>Grade:</H2>
-                <div>
-                    <div onChange={e => {
-                        setGradeValue(e)
-                    }} className="float-left pl-4 pr-4">
-                        {[9, 10, 11, 12].map(g => (
-                        <>
-                        <input type="radio" id={g.toString()} name="grade" value={g} style={{display: "none",}}/>
-                        <label 
-                            htmlFor={g.toString()} 
-                            className={`w-6 h-6 rounded-full cursor-pointer transition px-2 mx-4 ${g == grade && "bg-blue-300"}`}
-                        >{g}</label>
-                        </>
-                    ))}
-                    </div>
+            <CustomSectionComponent>
+                <CustomLabelComponent>Grade:</CustomLabelComponent>
+                <div onChange={e => setGradeValue(e)} className="md:w-full flex flex-row gap-4">
+                    {[9, 10, 11, 12].map(g => (
+                    <>
+                    <input type="radio" id={g.toString()} name="grade" value={g} style={{display: "none",}}/>
+                    <label 
+                        htmlFor={g.toString()} 
+                        className={`block w-10 h-10 flex items-center justify-center rounded-full cursor-pointer transition font-normal text-gray-500 ${g == grade && "bg-primary text-gray-700"}`}
+                    ><p>{g}</p></label>
+                    </>
+                ))}
                 </div>
-            </div>
-            <H2 className="flex justify-center items-center p-4 oswald font-bold text-xl">School:</H2>
-            <div className="flex items-center">
+            </CustomSectionComponent>
+            {/* <h2 className="sectionClasses text-black text-xl font-semibold">School:</h2> */}
+            {/* <div className="flex items-center"> */}
 
                 {/* <Select 
                     options={schoolData && schoolData.data && schoolData.data.map(s => ({
@@ -121,9 +126,9 @@ export default function NewAccount({ }: {}) {
                     className="w-full"
                 /> */}
                 {/* <p>Don't see your school? Tell your execs to create a school.<br/>Or, continue without one.</p> */}
-            </div>
-            <div className="flex justify-center items-center p-4 oswald font-bold text-xl">
-                <label>Previous HOSA events:</label>
+            {/* </div> */}
+            <CustomSectionComponent>
+                <CustomLabelComponent>Previous HOSA events:</CustomLabelComponent>
                 <Select 
                     isMulti
                     options={eventsData && eventsData.data && eventsData.data.map(event => ({
@@ -133,7 +138,7 @@ export default function NewAccount({ }: {}) {
                     onChange={newSelectedOptions => setPrevEvents(newSelectedOptions.map(option => option.value))}
                     isDisabled={isLoading}
                     isClearable={true}
-                    className="font-normal w-full"
+                    className="font-normal w-full md:flex-grow"
                     id="prevEvents"
                 />
                 {/* <select name="hosaEvents" id="hosaEvents" multiple>
@@ -168,10 +173,10 @@ export default function NewAccount({ }: {}) {
                     <option value="HOSABowl">HOSA Bowl</option>
                     <option value="medInno">Medical Innovation</option>
                 </select> */}
-            </div>
+            </CustomSectionComponent>
 
-            <div className="flex justify-center items-center p-4 oswald font-bold text-xl">
-                <label>Do you prefer team events or individual events (optional):</label>
+            <CustomSectionComponent>
+                <CustomLabelComponent>Do you prefer team events or individual events (optional):</CustomLabelComponent>
                 <Select 
                     options={[
                         {value: "team", label: "Team events"},
@@ -180,7 +185,7 @@ export default function NewAccount({ }: {}) {
                     onChange={option => onLabelChange(option ? option.value : "Team events", !option)}
                     isDisabled={isLoading}
                     isClearable={true}
-                    className="font-normal w-full"
+                    className="font-normal w-full md:flex-grow"
                     id="teamVsIndividual"
                 />
 
@@ -189,10 +194,10 @@ export default function NewAccount({ }: {}) {
                     <option value="team">Team Events</option>
                     <option value="individual">Individual Events</option>
                 </select> */}
-            </div>
+            </CustomSectionComponent>
 
-            <div className="flex justify-center items-center p-4 oswald font-bold text-xl">
-                <label>Do you prefer knowledge tests or skill performances (optional):</label>
+            <CustomSectionComponent>
+                <CustomLabelComponent>Do you prefer knowledge tests or skill performances (optional):</CustomLabelComponent>
                 <Select 
                     options={[
                         {value: "KT", label: "Knowledge tests"},
@@ -201,7 +206,7 @@ export default function NewAccount({ }: {}) {
                     onChange={option => onLabelChange(option ? option.value : "KT", !option)}
                     isDisabled={isLoading}
                     isClearable={true}
-                    className="font-normal w-full"
+                    className="font-normal w-full md:flex-grow"
                     id="ktvsskill"
                 />
                 {/* <select name="KTorSkillPerf" id="KTorSkillPerf">
@@ -209,21 +214,21 @@ export default function NewAccount({ }: {}) {
                     <option value="KT">Knowledge Tests</option>
                     <option value="skill">Skill Performances</option>
                 </select> */}
-            </div>
+            </CustomSectionComponent>
 
             {error && (
                 <p className="text-red-500">{error}</p>
             )}
-            <div className="flex justify-center items-center p-4 oswald font-bold text-xl">
-            <HandwrittenButton
-                // isLoading={isLoading}
-                onClick={onSubmit}
-                disabled={loading || grade === 0 || !school}
-            >
-                SUBMIT
-            </HandwrittenButton>
+            <div className="flex w-full justify-center my-12 oswald font-bold text-xl">
+                <HandwrittenButton
+                    // isLoading={isLoading}
+                    onClick={onSubmit}
+                    disabled={loading || grade === 0 || !school}
+                >
+                    SUBMIT
+                </HandwrittenButton>
             </div>
-        </>
+        </Container>
     );
 }
 
@@ -241,3 +246,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             return {props: { }};
     }
 };
+
+const CustomLabelComponent = ({children}: {children: string}) => <div className="md:w-1/2 text-center md:text-right mr-6 mb-2 md:mb-0"><label>{children}</label></div>
+const CustomSectionComponent = ({children}: {children: ReactNode}) => <div className="flex flex-col md:flex-row items-center my-8 oswald font-bold text-xl">{children}</div>

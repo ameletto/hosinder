@@ -104,7 +104,7 @@ const admin = (props: { thisUser: DatedObj<UserObj>, thisSchool: DatedObj<School
                         </div>
                     ))}
                 </div>
-                <Modal isOpen={isAddAdmin} setIsOpen={setIsAddAdmin}>
+                <Modal isOpen={isAddAdmin} onRequestClose={() => setIsAddAdmin(false)}>
                     <H2 className="mb-2">Add admin</H2>
                     <p className="mb-4">Here is everyone that goes to {props.thisSchool.name}:</p>
                     <Select 

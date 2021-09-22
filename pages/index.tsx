@@ -1,5 +1,6 @@
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/client";
+import CuteGradientCircle from "../components/CuteGradientCircle";
 import SignInButton from "../components/SignInButton";
 import { UserModel } from "../models/User";
 import dbConnect from "../utils/dbConnect";
@@ -20,11 +21,8 @@ export default function Home() {
                 <p className="absolute bottom-0 left-0" style={{ transform: "rotate(-90deg)", transformOrigin: "0% 0%" }}>{hosaTinder}</p>
             </div>
 
-            <div className="absolute w-96 h-96 rounded-full" style={{ background: "radial-gradient(rgba(183,225,252,1) 30%, rgba(212,208,254,0.5) 60%, rgba(255,255,255,0) 100%)", left: -40, top: -40, zIndex: -10}}>
-            </div>
-            
-            <div className="absolute w-96 h-96 rounded-full right-0 bottom-0" style={{ background: "radial-gradient(rgba(183,225,252,1) 30%, rgba(212,208,254,0.5) 60%, rgba(255,255,255,0) 100%)", right: -40, bottom: -40, zIndex: -10}}>
-            </div>
+            <CuteGradientCircle className="w-96 h-96 absolute rounded-full" style={{left: -40, top: -40}}/>
+            <CuteGradientCircle className="w-96 h-96 absolute rounded-full" style={{right: -40, bottom: -40}}/>
 
             <div className="flex items-center justify-center text-center flex-col h-screen work-sans">
                 <div style={{maxWidth: "70%"}}>                    

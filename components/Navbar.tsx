@@ -2,6 +2,7 @@ import { useSession, signOut } from "next-auth/client";
 import Button from "./Button";
 import Container from "./Container";
 import HandwrittenButton from "./HandwrittenButton";
+import Link from "next/link";
 
 export default function Navbar() {
     const [session, loading] = useSession();
@@ -9,7 +10,7 @@ export default function Navbar() {
     return (
         <div className="w-full sticky top-0">
             <Container className="flex items-center my-4" width="full">
-                <p className="oswald font-bold text-4xl">HOSA Tinder</p>
+                <Link href="/"><a><img src="/logo.png" alt="HOSA Tinder logo" className="h-12"/></a></Link>
                 <div className="ml-auto flex items-center">
                     {loading ? <p>Loading...</p> : session ? (
                         <>

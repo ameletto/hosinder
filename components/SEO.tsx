@@ -15,11 +15,11 @@ export default function SEO({
     let openGraph = {
         title: fullTitle,
         description: description,
-        url: "https://your-domain.com" + router.asPath,
+        url: "https://hosatinder.vercel.app" + router.asPath,
         images: imgUrl ? [
             { url: imgUrl }
         ] : [
-            { url: "https://your-domain.com/defaultImage.png" }
+            { url: "/logo-square.png" }
         ],
     };
 
