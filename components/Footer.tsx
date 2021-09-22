@@ -1,6 +1,13 @@
+import { useRouter } from "next/router";
+
 export default function Footer() {
+  const router = useRouter();
   return (
-    <div className="max-w-7xl mx-auto h-16 flex items-center px-4 mt-12">
+    <div
+      className={`max-w-7xl mx-auto h-16 flex items-center px-4 mt-12 ${
+        ["/app"].includes(router.route) && "fixed bottom-0"
+      }`}
+    >
       <span className="dark:text-gray-300 opacity-50">
         Made with ♥ by{" "}
         <a
