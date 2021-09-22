@@ -8,19 +8,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         case "GET": {
             const session = await getSession({ req });
             if (!session) return res.status(403);
-            if (!(req.query.school || req.query.name || req.query.description || req.query.labels || req.query.image)) {
-                return res.status(406);                        
-            }
-            
+
+            const mongoose = require('mongoose');
+
             try {                
                 let conditions = {};
-
-                if (req.query.id) conditions["_id"] = req.query.id;
+                if (req.query.id) conditions["_id"] = mongoose.Types.ObjectId(`${req.query.id}`);
                 if (req.query.name) conditions["name"] = req.query.name;
                 if (req.query.description) conditions["description"] = req.query.description;
                 if (req.query.labels) conditions["labels"] = req.query.labels;
                 if (req.query.image) conditions["image"] = req.query.image;
-                if (req.query.school) conditions["school"] = req.query.school;
+                if (req.query.school) conditions["school"] = mongoose.Types.ObjectId(`${req.query.school}`);
                 
                          
                 await dbConnect();   
@@ -32,7 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 
                 if (!thisObject || !thisObject.length) return res.status(404);
                 
-                return res.status(200).json({data: thisObject[0]});
+                return res.status(200).json({data: thisObject});
             } catch (e) {
                 return res.status(500).json({message: e});                        
             }
@@ -51,10 +49,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     const thisObject = await EventModel.findById(req.body.id);
                     if (!thisObject) return res.status(404);
                     
-                    thisObject.name = req.body.name;
-                    thisObject.description = req.body.description;
-                    thisObject.labels = req.body.labels;
-                    thisObject.image = req.body.image;
+                    if (req.body.name) thisObject.name = req.body.name;
+                    if (req.body.description) thisObject.description = req.body.description;
+                    if (req.body.labels) thisObject.labels = req.body.labels;
+                    if (req.body.image) thisObject.image = req.body.image;
                     
                     await thisObject.save();
                     
@@ -69,7 +67,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         description: req.body.description,
                         school: req.body.school,
                         labels: req.body.labels || [],
-                        image: req.body.image || "",                             
+                        image: req.body.image || "",              
                     });
                     
                     const savedEvent = await newEvent.save();

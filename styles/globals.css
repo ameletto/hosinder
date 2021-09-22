@@ -1,27 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Oswald&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@900&family=Work+Sans:wght@800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Raleway:wght@900&family=Work+Sans:wght@800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&family=Work+Sans:wght@800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Raleway:wght@400;700&family=Work+Sans:wght@800&display=swap');
 
-.primary {
-    color: "#B7E1FC";
-}
+.primary {color: #B7E1FC;}
 
-.bg-primary {
-    background-color: "#B7E1FC";
-}
+.bg-primary {background-color: #B7E1FC;}
 
-.border-primary {
-    border-color: "#B7E1FC";
-}
+.border-primary {border-color: #B7E1FC;}
+.border-secondary {border-color: #D4D0FE;}
 
 .bg-scribble-hover:hover {
     background-image: url("/scribble.png");
     background-size: contain;
+}
+
+@responsive {
+    .w-150 {width: 600px;}
 }
 
 .up-spinner {
@@ -37,19 +35,19 @@
 }
 
 .up-spinner.dark {
-    border-color: rgba(0,0,0,0.3);
+    border-color: rgba(0, 0, 0, 0.3);
     border-top-color: black;
 }
 
-.oswald { 
+.oswald {
     font-family: 'Oswald';
 }
 
-.work-sans { 
+.work-sans {
     font-family: 'Work Sans';
 }
 
-.raleway {
+body, .raleway {
     font-family: 'Raleway';
 }
 
@@ -58,6 +56,10 @@
 }
 
 @keyframes up-spin {
-    0% { transform: rotate(0deg); }
-    100% {transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }

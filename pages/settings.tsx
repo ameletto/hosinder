@@ -6,6 +6,7 @@ import { useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import Select from "react-select";
 import useSWR, { SWRResponse } from "swr";
+import Container from "../components/Container";
 import CreateSchoolModal from "../components/CreateSchoolModal";
 import HandwrittenButton from "../components/HandwrittenButton";
 import SEO from "../components/SEO";
@@ -29,10 +30,16 @@ export default function NewAccount(props: { thisUser: DatedObj<UserObj> }) {
     const {data: schoolData, error: schoolError}: SWRResponse<{data: DatedObj<SchoolObj>[]}, any> = useSWR(`/api/school`, fetcher);
 
 
+    const options = (schoolData && schoolData.data) ? schoolData.data.map(s => ({
+        value: s._id,
+        label: s.name,
+    })) : []
+
     function onSubmit() {
         setIsLoading(true);
 
-        axios.post("/api/auth/account", {
+        axios.post("/api/user", {
+            id: thisUser._id,
             grade: grade,
             school: school,
         }).then(res => {
@@ -40,6 +47,7 @@ export default function NewAccount(props: { thisUser: DatedObj<UserObj> }) {
                 setError(res.data.error);
                 setIsLoading(false);
             } else {
+                console.log(res.data.message)
                 console.log("redirecting...");
                 router.push("/app");
             }
@@ -53,9 +61,10 @@ export default function NewAccount(props: { thisUser: DatedObj<UserObj> }) {
         setGrade(e.target.value);
         setError(null);
     }
+    console.log(options.find(o => o.value === school));
 
     return (
-        <>
+        <Container width="4xl">
             <SEO title="Settings" />
             {loading ? (
                 <Skeleton count={2} />
@@ -78,27 +87,28 @@ export default function NewAccount(props: { thisUser: DatedObj<UserObj> }) {
                     setGradeValue(e)
                 }} className="float-left pl-4 pr-4">
                     {[9, 10, 11, 12].map(g => (
-                        <>
-                        <input type="radio" id={g.toString()} name="grade" value={g} style={{display: "none",}}/>
-                        <label 
-                            htmlFor={g.toString()} 
-                            className={`w-6 h-6 rounded-full cursor-pointer transition px-2 mx-4 ${g == grade && "bg-primary"}`}
-                        >{g}</label>
-                        </>
+                        <span key={g.toString()}>
+                            <input type="radio" id={g.toString()} name="grade" value={g} style={{display: "none",}}/>
+                            <label 
+                                htmlFor={g.toString()} 
+                                className={`w-6 h-6 rounded-full cursor-pointer transition px-2 mx-4 ${g == grade && "bg-blue-300"}`}
+                            >{g}</label>
+                        </span>
                     ))}
                 </div>
             </div>
             <h2 className="flex justify-center items-center p-4 oswald font-bold text-xl">School:</h2>
             <div className="flex items-center">
-
+                {// todo: default value of select.
+                }
                 <Select 
-                    options={schoolData && schoolData.data && schoolData.data.map(s => ({
-                        value: s._id,
-                        label: s.name,
-                    }))}
+                    options={options}
+                    defaultValue={options.find(o => o.value === school)}
                     onChange={option => setSchool(option.value)}
-                    isDisabled={isLoading}
+                    isSearchable={false}
                     className="w-full"
+                    isDisabled={isLoading}
+                    instanceId="choose-school-sdkjfalksdj"
                 />
                 <div className="flex justify-center items-center p-4 oswald font-bold text-xl">
                     <HandwrittenButton onClick={() => setIsCreateSchool(true)} >Don't see your school? Create a school.</HandwrittenButton>
@@ -177,7 +187,7 @@ export default function NewAccount(props: { thisUser: DatedObj<UserObj> }) {
                 Save
             </HandwrittenButton>
             </div>
-        </>
+        </Container>
     );
 }
 

@@ -1,6 +1,6 @@
-const H3 = ({children} : {children: string}) => {
+const H3 = ({children, className = ""} : {children: string, className?: string}) => {
     return (
-        <p className="font-bold text-gray-700">{children}</p>
+        <p className={`font-bold text-gray-700 ${className}`}>{children}</p>
     )
 }
 

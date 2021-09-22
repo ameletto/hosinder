@@ -18,6 +18,11 @@ export interface EventObj {
     image?: string; 
 }
 
+export interface SubmissionObj {
+    user: string; 
+    top3events: string[]; 
+}
+
 export interface SchoolObj {
     name: string; 
     admin: string[];  // Object ID
@@ -25,8 +30,9 @@ export interface SchoolObj {
     image?: string;
 }
 
-export interface SchoolObjWithAdmins extends SchoolObj {
-    adminArr: DatedObj<UserObj>[],
+export interface SchoolObjGraph extends SchoolObj {
+    adminsArr: DatedObj<UserObj>[],
+    eventsArr: DatedObj<EventObj>[],
 }
 
 export interface SessionObj {

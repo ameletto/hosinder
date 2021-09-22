@@ -2,66 +2,130 @@ import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/client";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
+import Select from "react-select";
 import useSWR, { SWRResponse } from "swr";
+import Container from "../components/Container";
 import CreateEventModal from "../components/CreateEventModal";
+import H1 from "../components/H1";
+import H2 from "../components/H2";
 import H3 from "../components/H3";
 import HandwrittenButton from "../components/HandwrittenButton";
+import Modal from "../components/Modal";
 import SEO from "../components/SEO";
 import { SchoolModel } from "../models/School";
 import { UserModel } from "../models/User";
 import cleanForJSON from "../utils/cleanForJSON";
 import dbConnect from "../utils/dbConnect";
 import fetcher from "../utils/fetcher";
-import { DatedObj, EventObj, SchoolObjWithAdmins, UserObj } from "../utils/types";
+import { DatedObj, SchoolObj, SchoolObjGraph, UserObj } from "../utils/types";
+import axios from "axios";
+import EventCard from "../components/EventCard";
 
-const admin = (props: { thisUser: DatedObj<UserObj>, thisSchool: DatedObj<SchoolObjWithAdmins> }) => {
+const admin = (props: { thisUser: DatedObj<UserObj>, thisSchool: DatedObj<SchoolObj> }) => {
     const [isCreateEvent, setIsCreateEvent] = useState<boolean>(false);
+    const [isAddAdmin, setIsAddAdmin] = useState<boolean>(false);
     const [iter, setIter] = useState<number>(0);
+    const [newAdmins, setNewAdmins] = useState<string[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string>(null);
     
-    const {data: events, error: eventsError}: SWRResponse<{data: DatedObj<EventObj>[]}, any> = useSWR(`/api/events?school=${props.thisSchool._id}&iter=${iter}`, fetcher);
+    const {data: schoolData, error: schoolError}: SWRResponse<{data: DatedObj<SchoolObjGraph>}, any> = useSWR(`/api/school?id=${props.thisSchool._id}&iter=${iter}`, fetcher);
+    const {data: studentsData, error: studentsError}: SWRResponse<{data: DatedObj<UserObj>[]}, any> = useSWR(`/api/user?school=${props.thisSchool._id}&removeAdmins=${true}`, fetcher);
+    if (studentsData && studentsData.data) console.table([...studentsData.data, props.thisUser])
+
+    function onAddAdmin() {
+        setIsLoading(true);
+
+        axios.post("/api/school", {
+            id: props.thisSchool._id,
+            admin: [...props.thisSchool.admin, ...newAdmins,],
+        }).then(res => {
+            if (res.data.error) {
+                setError(res.data.error);
+                console.log(res.data.error)
+                setIsLoading(false);
+            } else {
+                console.log(res.data);
+                setIsAddAdmin(false);
+            }
+        }).catch(e => {
+            setIsLoading(false);
+            setError("An unknown error occurred.");
+            console.log(e);
+        });
+    }
 
     return (
-        <div className="max-w-5xl">
-            <SEO title={`${props.thisSchool.name} dashboard`} imgUrl={props.thisSchool.image || null}/>
-            <h1>{props.thisSchool.name}</h1>
+        <Container width="7xl">
+            <SEO title={`Dashboard: ${props.thisSchool.name}`} imgUrl={props.thisSchool.image || null}/>
+            <H1 className="text-center">{props.thisSchool.name}</H1>
             <p>{props.thisSchool.description}</p>
 
-            <div className="flex">
-                <H3>Your events:</H3>
-                <div className="ml-auto"><HandwrittenButton onClick={() => setIsCreateEvent(true)}><FaPlus/>New event</HandwrittenButton></div>
-            </div>
-            <CreateEventModal isOpen={isCreateEvent} setIsOpen={setIsCreateEvent} schoolId={props.thisSchool._id} iter={iter} setIter={setIter}/>
-            {(events && events.data) && events.data.length > 0 ? events.data.map(e => (
-                // Grid of events
+            <div className="mb-8">
                 <div className="flex">
-                    <div className="rounded-md border-primary w-1/3">
-                        <h2>{e.name}</h2>
-                        {e.image && <img src={e.image}/>}
-                        <p>{e.description}</p>
-                    </div>
+                    <H2 className="mb-4">All events:</H2>
+                    <div className="ml-auto"><HandwrittenButton onClick={() => setIsCreateEvent(true)} arrowRightOnHover={false}>
+                        <div className="flex items-center">
+                            <FaPlus/><span className="ml-2">New event</span>
+                        </div>
+                    </HandwrittenButton></div>
                 </div>
-            )) : <p>No events yet. Create an event so your students can start tinder-matching themselves to 'em ;)</p>}
-
-            <div className="flex">
-                <H3>Your admins:</H3>
-                <div className="ml-auto"><HandwrittenButton><FaPlus/>Add an admin</HandwrittenButton></div>
-            </div>
-            {props.thisSchool.adminArr.map(user => (
-                <div className="flex justify-center p-4 oswald font-bold">
-                <img
-                    src={user.image}
-                    alt={`Profile picture of ${user.name}`}
-                    className="rounded-full h-14 w-14 mr-4"
-                />
-                <div>
-                    <p className="text-xl">{user.name}</p>
-                    <p className="text-xl">{user.email}</p>
+                <CreateEventModal isOpen={isCreateEvent} setIsOpen={setIsCreateEvent} schoolId={props.thisSchool._id} iter={iter} setIter={setIter}/>
+                <div className="flex gap-8 flex-wrap overflow-hidden">
+                    {(schoolData && schoolData.data) && schoolData.data.eventsArr.length > 0 ? schoolData.data.eventsArr.map(event => (
+                        // Grid of events
+                        <EventCard event={event} wide={false}/>
+                    )) : <p>No events yet. Create an event so your students can start tinder-matching themselves to 'em ;)</p>}
                 </div>
             </div>
-            ))}
+
+            <div>
+                <div className="flex">
+                    <H2 className="mb-4">{`${props.thisSchool.name}'s admins:`}</H2>
+                    <div className="ml-auto"><HandwrittenButton onClick={() => setIsAddAdmin(true)} arrowRightOnHover={false}>
+                        <div className="flex items-center">
+                            <FaPlus/><span className="ml-2">Add admins</span>
+                        </div>
+                    </HandwrittenButton></div>
+                </div>
+                <div className="flex gap-4">
+                    {schoolData && schoolData.data && schoolData.data.adminsArr.map(user => (
+                        // TODO: click on user -> popup with more info?
+                        <div className="flex justify-center p-4 oswald font-bold rounded-md transition border border-transparent hover:border-gray-400" key={user._id}>
+                            <img
+                                src={user.image}
+                                alt={`Profile picture of ${user.name}`}
+                                className="rounded-full h-14 w-14 mr-4"
+                            />
+                            <div>
+                                <p className="text-xl">{user.name}</p>
+                                <p className="text-xl">{user.email}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+                <Modal isOpen={isAddAdmin} onRequestClose={() => setIsAddAdmin(false)}>
+                    <H2 className="mb-2">Add admin</H2>
+                    <p className="mb-4">Here is everyone that goes to {props.thisSchool.name}:</p>
+                    <Select 
+                        isMulti
+                        options={studentsData && studentsData.data && studentsData.data.map(s => ({
+                            value: s._id,
+                            label: s.name,
+                        }))}
+                        onChange={newSelectedOptions => setNewAdmins(newSelectedOptions.map(option => option.value))}
+                        isDisabled={isLoading}
+                        className="w-full"
+                    />
+                    {error && (
+                        <p className="text-red-500">{error}</p>
+                    )}
+                    <div className="mt-10 mb-2"><HandwrittenButton onClick={onAddAdmin} py={3}>Add</HandwrittenButton></div>
+                </Modal>
+            </div>
 
 
-        </div>
+        </Container>
     )
 }
 
@@ -76,23 +140,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         await dbConnect();
         const thisUser = await UserModel.findOne({email: session.user.email});
             
-        const thisSchool = await SchoolModel.aggregate([
-            {$match: {admin: thisUser._id}},
-            {$lookup: {
-                from: "users",
-                // localField: "admin",
-                // foreignField: "_id",
-                let: {"_id": "$admin"},
-                pipeline: [
-                    {$match: {$expr: {$and: [{$in: ["$_id", "$$_id"]}, ]}}},
-                ],
-                as: "adminArr", 
-            }}    
-        ]) 
+        const thisSchool = await SchoolModel.findOne({admin: {$all: [thisUser._id]}})
+        if (!thisSchool) return {notFound: true};
         return !thisUser ? {redirect: {permanent: false, destination: "/auth/newaccount"}} : {props: { thisUser: cleanForJSON(thisUser), thisSchool: cleanForJSON(thisSchool) }};
     } catch (e) {
         console.log(e);
-        return {props: { }};
-        // return an unexpected error occured
+        return {notFound: true};
+        // return an unexpected error occured?
     }
 };
