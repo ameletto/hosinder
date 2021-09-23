@@ -2,6 +2,7 @@ import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/client";
 import CuteGradientCircle from "../components/CuteGradientCircle";
 import SignInButton from "../components/SignInButton";
+import SEO from "../components/SEO";
 import { UserModel } from "../models/User";
 import dbConnect from "../utils/dbConnect";
 
@@ -11,6 +12,8 @@ export default function Home() {
 
     return (
         // <div className= font>
+        <>
+        <SEO />
         <div className="top-0 left-0 absolute w-screen h-screen overflow-hidden">
             <div className="hidden sm:block oswald font-bold truncate text-4xl">
                 <div className="absolute top-0 right-0" style={{ transform: "rotate(180deg)" }}>
@@ -35,6 +38,7 @@ export default function Home() {
                 </div>  
             </div>
         </div>
+        </>
     );
 }
 
