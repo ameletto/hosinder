@@ -5,7 +5,8 @@ export default function Footer() {
   return (
     <div
       className={`max-w-7xl mx-auto h-16 flex items-center px-4 mt-12 ${
-        ["/app"].includes(router.route) && "fixed bottom-0"
+        ["/app"].includes(router.route) && "fixed bottom-0",
+        ["/"].includes(router.route) && "fixed bottom-5 left-8"
       }`}
     >
       <span className="dark:text-gray-300 opacity-50">
