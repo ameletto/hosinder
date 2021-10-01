@@ -1,11 +1,12 @@
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/client";
 import { useState } from "react";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaTrash } from "react-icons/fa";
 import Select from "react-select";
 import useSWR, { SWRResponse } from "swr";
 import Container from "../components/Container";
 import CreateEventModal from "../components/CreateEventModal";
+import DeleteEventModal from "../components/DeleteEventModal";
 import H1 from "../components/H1";
 import H2 from "../components/H2";
 import H3 from "../components/H3";
@@ -20,10 +21,13 @@ import fetcher from "../utils/fetcher";
 import { DatedObj, SchoolObj, SchoolObjGraph, UserObj } from "../utils/types";
 import axios from "axios";
 import EventCard from "../components/EventCard";
+import { PassThrough } from "stream";
+import {useRouter} from "next/router";
 
 const admin = (props: { thisUser: DatedObj<UserObj>, thisSchool: DatedObj<SchoolObj> }) => {
     const [isCreateEvent, setIsCreateEvent] = useState<boolean>(false);
     const [isAddAdmin, setIsAddAdmin] = useState<boolean>(false);
+    const [isDeleteEvent, setIsDeleteEvent] = useState<boolean>(false);
     const [iter, setIter] = useState<number>(0);
     const [newAdmins, setNewAdmins] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -31,7 +35,8 @@ const admin = (props: { thisUser: DatedObj<UserObj>, thisSchool: DatedObj<School
     
     const {data: schoolData, error: schoolError}: SWRResponse<{data: DatedObj<SchoolObjGraph>}, any> = useSWR(`/api/school?id=${props.thisSchool._id}&iter=${iter}`, fetcher);
     const {data: studentsData, error: studentsError}: SWRResponse<{data: DatedObj<UserObj>[]}, any> = useSWR(`/api/user?school=${props.thisSchool._id}&removeAdmins=${true}`, fetcher);
-    if (studentsData && studentsData.data) console.table([...studentsData.data, props.thisUser])
+
+    console.log((schoolData && schoolData.data) ? schoolData.data.eventsArr : [])
 
     function onAddAdmin() {
         setIsLoading(true);
@@ -54,6 +59,7 @@ const admin = (props: { thisUser: DatedObj<UserObj>, thisSchool: DatedObj<School
             console.log(e);
         });
     }
+    
 
     return (
         <Container width="7xl">
@@ -69,8 +75,14 @@ const admin = (props: { thisUser: DatedObj<UserObj>, thisSchool: DatedObj<School
                             <FaPlus/><span className="ml-2">New event</span>
                         </div>
                     </HandwrittenButton></div>
+                    <div className="ml-auto"><HandwrittenButton onClick={() => setIsDeleteEvent(true)}> 
+                    <div className="flex items-center">
+                        <FaTrash/><span className="ml-2">Delete events</span>
+                        </div>
+                    </HandwrittenButton></div>
                 </div>
                 <CreateEventModal isOpen={isCreateEvent} setIsOpen={setIsCreateEvent} schoolId={props.thisSchool._id} iter={iter} setIter={setIter}/>
+                <DeleteEventModal isOpen={isDeleteEvent} setIsOpen={setIsDeleteEvent} schoolId={props.thisSchool._id} iter={iter} setIter={setIter} eventData={(schoolData && schoolData.data) ? schoolData.data.eventsArr : []}/>
                 <div className="flex gap-8 flex-wrap overflow-hidden">
                     {(schoolData && schoolData.data) && schoolData.data.eventsArr.length > 0 ? schoolData.data.eventsArr.map(event => (
                         // Grid of events
