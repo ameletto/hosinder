@@ -1,15 +1,17 @@
+import axios from "axios";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/client";
 import { useState } from "react";
-import { FaPlus, FaTrash } from "react-icons/fa";
+import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import Select from "react-select";
 import useSWR, { SWRResponse } from "swr";
 import Container from "../components/Container";
 import CreateEventModal from "../components/CreateEventModal";
 import DeleteEventModal from "../components/DeleteEventModal";
+import EditEventModal from "../components/EditEventModal";
+import EventCard from "../components/EventCard";
 import H1 from "../components/H1";
 import H2 from "../components/H2";
-import H3 from "../components/H3";
 import HandwrittenButton from "../components/HandwrittenButton";
 import Modal from "../components/Modal";
 import SEO from "../components/SEO";
@@ -19,13 +21,10 @@ import cleanForJSON from "../utils/cleanForJSON";
 import dbConnect from "../utils/dbConnect";
 import fetcher from "../utils/fetcher";
 import { DatedObj, SchoolObj, SchoolObjGraph, UserObj } from "../utils/types";
-import axios from "axios";
-import EventCard from "../components/EventCard";
-import { PassThrough } from "stream";
-import {useRouter} from "next/router";
 
 const admin = (props: { thisUser: DatedObj<UserObj>, thisSchool: DatedObj<SchoolObj> }) => {
     const [isCreateEvent, setIsCreateEvent] = useState<boolean>(false);
+    const [isEditEvent, setIsEditEvent] = useState<boolean>(false);
     const [isAddAdmin, setIsAddAdmin] = useState<boolean>(false);
     const [isDeleteEvent, setIsDeleteEvent] = useState<boolean>(false);
     const [iter, setIter] = useState<number>(0);
@@ -67,21 +66,30 @@ const admin = (props: { thisUser: DatedObj<UserObj>, thisSchool: DatedObj<School
             <H1 className="text-center">{props.thisSchool.name}</H1>
             <p>{props.thisSchool.description}</p>
 
-            <div className="mb-8">
+            <div className="my-8">
                 <div className="flex">
                     <H2 className="mb-4">All events:</H2>
-                    <div className="ml-auto"><HandwrittenButton onClick={() => setIsCreateEvent(true)} arrowRightOnHover={false}>
-                        <div className="flex items-center">
-                            <FaPlus/><span className="ml-2">New event</span>
-                        </div>
-                    </HandwrittenButton></div>
-                    <div className="ml-auto"><HandwrittenButton onClick={() => setIsDeleteEvent(true)}> 
-                    <div className="flex items-center">
-                        <FaTrash/><span className="ml-2">Delete events</span>
-                        </div>
-                    </HandwrittenButton></div>
+
+                    <div className="flex ml-auto">
+                        <HandwrittenButton onClick={() => setIsCreateEvent(true)} arrowRightOnHover={false}>
+                            <div className="flex items-center">
+                                <FaPlus/><span className="ml-2">New event</span>
+                            </div>
+                        </HandwrittenButton>
+                        <HandwrittenButton onClick={() => setIsEditEvent(true)} arrowRightOnHover={false}> 
+                            <div className="flex items-center">
+                                <FaEdit/><span className="ml-2">Edit event</span>
+                            </div>
+                        </HandwrittenButton>
+                        <HandwrittenButton onClick={() => setIsDeleteEvent(true)} arrowRightOnHover={false}> 
+                            <div className="flex items-center">
+                                <FaTrash/><span className="ml-2">Delete events</span>
+                            </div>
+                        </HandwrittenButton>
+                    </div>
                 </div>
                 <CreateEventModal isOpen={isCreateEvent} setIsOpen={setIsCreateEvent} schoolId={props.thisSchool._id} iter={iter} setIter={setIter}/>
+                <EditEventModal isOpen={isEditEvent} setIsOpen={setIsEditEvent} allEvents={schoolData && schoolData.data ? schoolData.data.eventsArr : []} iter={iter} setIter={setIter}/>
                 <DeleteEventModal isOpen={isDeleteEvent} setIsOpen={setIsDeleteEvent} schoolId={props.thisSchool._id} iter={iter} setIter={setIter} eventData={(schoolData && schoolData.data) ? schoolData.data.eventsArr : []}/>
                 <div className="flex gap-8 flex-wrap overflow-hidden">
                     {(schoolData && schoolData.data) && schoolData.data.eventsArr.length > 0 ? schoolData.data.eventsArr.map(event => (
@@ -94,11 +102,13 @@ const admin = (props: { thisUser: DatedObj<UserObj>, thisSchool: DatedObj<School
             <div>
                 <div className="flex">
                     <H2 className="mb-4">{`${props.thisSchool.name}'s admins:`}</H2>
-                    <div className="ml-auto"><HandwrittenButton onClick={() => setIsAddAdmin(true)} arrowRightOnHover={false}>
-                        <div className="flex items-center">
-                            <FaPlus/><span className="ml-2">Add admins</span>
-                        </div>
-                    </HandwrittenButton></div>
+                    <div className="ml-auto">
+                        <HandwrittenButton onClick={() => setIsAddAdmin(true)} arrowRightOnHover={false}>
+                            <div className="flex items-center">
+                                <FaPlus/><span className="ml-2">Add admins</span>
+                            </div>
+                        </HandwrittenButton>
+                    </div>
                 </div>
                 <div className="flex gap-4">
                     {schoolData && schoolData.data && schoolData.data.adminsArr.map(user => (
@@ -116,26 +126,25 @@ const admin = (props: { thisUser: DatedObj<UserObj>, thisSchool: DatedObj<School
                         </div>
                     ))}
                 </div>
-                <Modal isOpen={isAddAdmin} onRequestClose={() => setIsAddAdmin(false)}>
-                    <H2 className="mb-2">Add admin</H2>
-                    <p className="mb-4">Here is everyone that goes to {props.thisSchool.name}:</p>
-                    <Select 
-                        isMulti
-                        options={studentsData && studentsData.data && studentsData.data.map(s => ({
-                            value: s._id,
-                            label: s.name,
-                        }))}
-                        onChange={newSelectedOptions => setNewAdmins(newSelectedOptions.map(option => option.value))}
-                        isDisabled={isLoading}
-                        className="w-full"
-                    />
-                    {error && (
-                        <p className="text-red-500">{error}</p>
-                    )}
-                    <div className="mt-10 mb-2"><HandwrittenButton onClick={onAddAdmin} py={3}>Add</HandwrittenButton></div>
-                </Modal>
             </div>
-
+            <Modal isOpen={isAddAdmin} onRequestClose={() => setIsAddAdmin(false)}>
+                <H2 className="mb-2">Add admin</H2>
+                <p className="mb-4">Here is everyone that goes to {props.thisSchool.name}:</p>
+                <Select 
+                    isMulti
+                    options={studentsData && studentsData.data && studentsData.data.map(s => ({
+                        value: s._id,
+                        label: s.name,
+                    }))}
+                    onChange={newSelectedOptions => setNewAdmins(newSelectedOptions.map(option => option.value))}
+                    isDisabled={isLoading}
+                    className="w-full"
+                />
+                {error && (
+                    <p className="text-red-500">{error}</p>
+                )}
+                <div className="mt-96 mb-2"><HandwrittenButton onClick={onAddAdmin} py={3}>Add</HandwrittenButton></div>
+            </Modal>
 
         </Container>
     )
