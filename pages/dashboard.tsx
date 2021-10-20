@@ -247,10 +247,11 @@ export default function dashboard(props: {thisUser: DatedObj<UserObj>, preferred
             </p>
             
             <div className="mt-12">
-                <HandwrittenButton onClick={() => setIsSubmitting(true)} disabled={!preferredEvents}>Submit!</HandwrittenButton>
+                <HandwrittenButton onClick={() => console.log("lol")} href="https://forms.gle/TKF2K5wZ2MWnwQuc7">Submit!</HandwrittenButton>
+                {/* <HandwrittenButton onClick={() => setIsSubmitting(true)} disabled={!preferredEvents}>Submit!</HandwrittenButton> */}
             </div>
 
-            <Modal isOpen={!!modalEvent} onRequestClose={() => setModalEvent(null)}>
+            {/* <Modal isOpen={!!modalEvent} onRequestClose={() => setModalEvent(null)}>
                 <div className="w-full flex justify-center">
                     {modalEvent && <EventCard event={modalEvent}/>}
                 </div>
@@ -266,7 +267,7 @@ export default function dashboard(props: {thisUser: DatedObj<UserObj>, preferred
                     <HandwrittenButton onClick={onSubmit} isLoading={isLoading}>Submit</HandwrittenButton>
                     <HandwrittenButton onClick={() => setIsSubmitting(false)}>Cancel</HandwrittenButton>
                 </div>
-            </Modal>
+            </Modal> */}
         </Container>
     );
 }
