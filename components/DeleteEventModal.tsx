@@ -34,7 +34,7 @@ const DeleteEventModal = ({ isOpen, setIsOpen, schoolId, iter, setIter, eventDat
     }
 
     return (
-        <Modal
+        <Modal 
             isOpen={isOpen}
             onRequestClose={() => setIsOpen(false)}
         >
@@ -55,7 +55,7 @@ const DeleteEventModal = ({ isOpen, setIsOpen, schoolId, iter, setIter, eventDat
                 }
             onChange={option => setName(option.value)}
             isDisabled={isLoading}
-            className="w-full my-2 py-2"
+            className="w-full mt-4 mb-96"
             />
             {error && (
                 <p className="text-red-500">{error}</p>
