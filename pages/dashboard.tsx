@@ -8,10 +8,8 @@ import { FaArrowLeft } from 'react-icons/fa';
 import Container from '../components/Container';
 import EventCard from '../components/EventCard';
 import H1 from '../components/H1';
-import H3 from '../components/H3';
 import HandwrittenButton from '../components/HandwrittenButton';
 import InlineButton from '../components/InlineButton';
-import Modal from '../components/Modal';
 import SEO from '../components/SEO';
 import { EventModel } from '../models/Event';
 import { UserModel } from '../models/User';
@@ -66,10 +64,10 @@ const renderedEventsToFlatList = (list: DatedObj<EventObj>[][]): DatedObj<EventO
 }
 
 export default function dashboard(props: {thisUser: DatedObj<UserObj>, preferredEvents: DatedObj<EventObj>[]}) {
-    const [preferredEvents, setPreferredEvents] = useState<DatedObj<EventObj>[]>(props.preferredEvents.length > 0 ? props.preferredEvents.filter(event => !props.thisUser.top3Events.includes(event._id)): []);
+    const [preferredEvents, setPreferredEvents] = useState<DatedObj<EventObj>[]>(props.preferredEvents.length > 0 ? props.preferredEvents.filter(event => (event && event._id) ? !props.thisUser.top3Events.includes(event._id) : false): []);
     // preferred events doesn't contain top 3 events.
     
-    const [top3Events, setTop3Events] = useState<DatedObj<EventObj>[]>(props.thisUser.top3Events.map(e => props.preferredEvents.find(event => e === event._id)) || []);
+    const [top3Events, setTop3Events] = useState<DatedObj<EventObj>[]>(props.thisUser.top3Events.map(e => props.preferredEvents.find(event => (event && event._id) ? e === event._id : false)) || []);
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [modalEvent, setModalEvent] = useState<DatedObj<EventObj>>(null);
