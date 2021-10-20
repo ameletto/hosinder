@@ -12,6 +12,7 @@ import H3 from '../components/H3';
 import HandwrittenButton from '../components/HandwrittenButton';
 import InlineButton from '../components/InlineButton';
 import Modal from '../components/Modal';
+import SEO from '../components/SEO';
 import { EventModel } from '../models/Event';
 import { UserModel } from '../models/User';
 import cleanForJSON from '../utils/cleanForJSON';
@@ -158,6 +159,7 @@ export default function dashboard(props: {thisUser: DatedObj<UserObj>, preferred
 
     return (
         <Container className="max-w-5xl">
+            <SEO/>
             <InlineButton href="/app"><div className="flex items-center"><FaArrowLeft/><span className="ml-2">Back to Tinder</span></div></InlineButton>
             <div className="mb-12">
                 <H1>Choose Top 3</H1>

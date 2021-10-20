@@ -12,6 +12,7 @@ import Container from "../components/Container";
 import EventCard from "../components/EventCard";
 import Footer from "../components/Footer";
 import H1 from "../components/H1";
+import SEO from "../components/SEO";
 import { UserModel } from "../models/User";
 import cleanForJSON from "../utils/cleanForJSON";
 import dbConnect from "../utils/dbConnect";
@@ -82,6 +83,7 @@ export default function App(props: { thisUser: DatedObj<UserObj> }) {
 
   return (
     <Container width="7xl">
+      <SEO/>
       <div className="mb-12">
         <H1>
           {eventData && eventData.data.length <= i
