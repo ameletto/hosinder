@@ -1,24 +1,23 @@
+import axios from "axios";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/client";
-import { SchoolModel } from "../models/School";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import {
+  DragDropContext, Draggable, Droppable
+} from "react-beautiful-dnd";
+import useSWR, { SWRResponse } from "swr";
+import Button from "../components/Button";
+import Container from "../components/Container";
+import EventCard from "../components/EventCard";
+import Footer from "../components/Footer";
+import H1 from "../components/H1";
+import SEO from "../components/SEO";
 import { UserModel } from "../models/User";
 import cleanForJSON from "../utils/cleanForJSON";
 import dbConnect from "../utils/dbConnect";
-import useSWR, { SWRResponse } from "swr";
-import { DatedObj, EventObj, SchoolObj, UserObj } from "../utils/types";
 import fetcher from "../utils/fetcher";
-import EventCard from "../components/EventCard";
-import Container from "../components/Container";
-import Button from "../components/Button";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import H1 from "../components/H1";
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-  resetServerContext,
-} from "react-beautiful-dnd";
+import { DatedObj, EventObj, UserObj } from "../utils/types";
 
 const getListStyle = (isDraggingOver) => ({
   background: isDraggingOver ? "radial-gradient(#B7E1FC, #ffffff)" : "white",
@@ -84,6 +83,7 @@ export default function App(props: { thisUser: DatedObj<UserObj> }) {
 
   return (
     <Container width="7xl">
+      <SEO/>
       <div className="mb-12">
         <H1>
           {eventData && eventData.data.length <= i
@@ -139,6 +139,7 @@ export default function App(props: { thisUser: DatedObj<UserObj> }) {
             </Checkpoint>
           </>
         ) : eventData.data.length > i ? (
+          <>
           <div className="flex gap-14 items-center justify-center">
             <DragDropContext
               onDragEnd={function (result) {
@@ -211,6 +212,9 @@ export default function App(props: { thisUser: DatedObj<UserObj> }) {
               </Droppable>
             </DragDropContext>
           </div>
+          <p className="text-center mt-12 text-sm text-gray-400">Think you found your perfect event? <a className="underline transition hover:primary"><Link href="/dashboard">See your events.</Link></a></p>
+          <Footer/>
+          </>
         ) : (
           <Checkpoint>
             <Button
@@ -244,7 +248,10 @@ function Checkpoint({ children }) {
       className="md:absolute top-0 left-0 w-screen h-screen grid md:grid-cols-2 text-xl"
       style={{ zIndex: -20 }}
     >
+      <>
       {children}
+      <div className="fixed bottom-0"><Footer/></div>
+      </>
     </div>
   );
 }

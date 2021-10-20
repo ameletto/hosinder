@@ -1,22 +1,23 @@
-import React, { Component, useState } from 'react';
-import ReactDOM from 'react-dom';
-import { DragDropContext, Droppable, Draggable, resetServerContext } from 'react-beautiful-dnd';
-import EventCard from '../components/EventCard';
-import Container from '../components/Container';
-import H1 from '../components/H1';
-import HandwrittenButton from '../components/HandwrittenButton';
+import axios from 'axios';
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/client';
-import dbConnect from '../utils/dbConnect';
+import Link from "next/link";
+import React, { useState } from 'react';
+import { DragDropContext, Draggable, Droppable, resetServerContext } from 'react-beautiful-dnd';
+import { FaArrowLeft } from 'react-icons/fa';
+import Container from '../components/Container';
+import EventCard from '../components/EventCard';
+import H1 from '../components/H1';
+import H3 from '../components/H3';
+import HandwrittenButton from '../components/HandwrittenButton';
+import InlineButton from '../components/InlineButton';
+import Modal from '../components/Modal';
+import SEO from '../components/SEO';
 import { EventModel } from '../models/Event';
 import { UserModel } from '../models/User';
 import cleanForJSON from '../utils/cleanForJSON';
+import dbConnect from '../utils/dbConnect';
 import { DatedObj, EventObj, UserObj } from '../utils/types';
-import Modal from '../components/Modal';
-import axios from 'axios';
-import H3 from '../components/H3';
-import InlineButton from '../components/InlineButton';
-import { FaArrowLeft } from 'react-icons/fa';
 
 // a little function to help us with reordering the result
 const reorder = (list: DatedObj<EventObj>[], startIndex, endIndex): DatedObj<EventObj>[] => {
@@ -65,7 +66,7 @@ const renderedEventsToFlatList = (list: DatedObj<EventObj>[][]): DatedObj<EventO
 }
 
 export default function dashboard(props: {thisUser: DatedObj<UserObj>, preferredEvents: DatedObj<EventObj>[]}) {
-    const [preferredEvents, setPreferredEvents] = useState<DatedObj<EventObj>[]>(props.preferredEvents.filter(event => !props.thisUser.top3Events.includes(event._id)));
+    const [preferredEvents, setPreferredEvents] = useState<DatedObj<EventObj>[]>(props.preferredEvents.length > 0 ? props.preferredEvents.filter(event => !props.thisUser.top3Events.includes(event._id)): []);
     // preferred events doesn't contain top 3 events.
     
     const [top3Events, setTop3Events] = useState<DatedObj<EventObj>[]>(props.thisUser.top3Events.map(e => props.preferredEvents.find(event => e === event._id)) || []);
@@ -158,98 +159,102 @@ export default function dashboard(props: {thisUser: DatedObj<UserObj>, preferred
 
     return (
         <Container className="max-w-5xl">
+            <SEO/>
             <InlineButton href="/app"><div className="flex items-center"><FaArrowLeft/><span className="ml-2">Back to Tinder</span></div></InlineButton>
             <div className="mb-12">
                 <H1>Choose Top 3</H1>
                 <div className="flex justify-center"><div className="-mt-3 ml-10 border-primary" style={{borderBottomWidth: 10, width: 220, zIndex: -1}}></div></div>
             </div>
-            <p>Here are all the events you swiped right on ;)<br/>Please drag them into order of preference and when ready, submit your event selection.</p>
-            <div className="mt-8"><DragDropContext onDragEnd={onDragEnd}><div className="flex flex-col gap-8">
-            <Droppable droppableId={`droppable--1`} direction="horizontal">
-                    {(provided, snapshot) => (
-                        <div
-                            ref={provided.innerRef}
-                        >
-                            <div className="flex flex-col md:flex-row">
-                                {[0, 1, 2].map(i => (
-                                    top3Events[i] ? <Draggable
-                                        key={top3Events[i]._id}
-                                        draggableId={top3Events[i]._id}
-                                        index={i}>
-                                        {(provided, snapshot) => (
-                                            <div
-                                                ref={provided.innerRef}
-                                                {...provided.draggableProps}
-                                                {...provided.dragHandleProps}
-                                                // style={getItemStyle(
-                                                //     snapshot.isDragging,
-                                                //     provided.draggableProps.style
-                                                // )}
-                                                className="px-4"
-                                                onClick={() => setModalEvent(top3Events[i])}
-                                            >
-                                                <EventCard event={top3Events[i]} wide={false} short={true}/>
-                                            </div>
-                                        )}
-                                    </Draggable> : <div className="mx-4 px-4 w-72 h-36 rounded-lg text-4xl flex items-center justify-center border-4 border-primary border-dashed"/>
-                                ))}
+            { props.thisUser.preferredEvents.length > 0 ?
+                <>
+                <p>Here are all the events you swiped right on ;)<br/>Please drag them into order of preference and when ready, submit your event selection.</p>
+                <div className="mt-8"><DragDropContext onDragEnd={onDragEnd}><div className="flex flex-col gap-8">
+                <Droppable droppableId={`droppable--1`} direction="horizontal">
+                        {(provided, snapshot) => (
+                            <div
+                                ref={provided.innerRef}
+                            >
+                                <div className="flex flex-col md:flex-row">
+                                    {[0, 1, 2].map(i => (
+                                        top3Events[i] ? <Draggable
+                                            key={top3Events[i]._id}
+                                            draggableId={top3Events[i]._id}
+                                            index={i}>
+                                            {(provided, snapshot) => (
+                                                <div
+                                                    ref={provided.innerRef}
+                                                    {...provided.draggableProps}
+                                                    {...provided.dragHandleProps}
+                                                    // style={getItemStyle(
+                                                    //     snapshot.isDragging,
+                                                    //     provided.draggableProps.style
+                                                    // )}
+                                                    className="px-4"
+                                                    onClick={() => setModalEvent(top3Events[i])}
+                                                >
+                                                    <EventCard event={top3Events[i]} wide={false} short={true}/>
+                                                </div>
+                                            )}
+                                        </Draggable> : <div className="mx-4 px-4 w-72 h-36 rounded-lg text-4xl flex items-center justify-center border-4 border-primary border-dashed"/>
+                                    ))}
+                                </div>
+                                {/* { provided.placeholder } */}
+                                <div className="flex gap-8">
+                                    {["🥇", "🥈", "🥉"].map(medal => (
+                                        <div className="w-72 text-4xl px-4 text-center mt-2">{medal}</div>
+                                    ))}
+                                </div>
                             </div>
-                            {/* { provided.placeholder } */}
-                            <div className="flex gap-8">
-                                {["🥇", "🥈", "🥉"].map(medal => (
-                                    <div className="w-72 text-4xl px-4 text-center mt-2">{medal}</div>
-                                ))}
+                        )}
+                    </Droppable>
+                    {preferredEvents && flatListToRenderedEvents(preferredEvents).map((subList, index) => <Droppable droppableId={`droppable-${index}`} direction="horizontal">
+                        {(provided, snapshot) => (
+                            <div
+                                ref={provided.innerRef}
+                                key={subList[0]._id}
+                                // style={getListStyle(snapshot.isDraggingOver)}
+                            >
+                                {index === 0 && <h2 className="raleway text-3xl font-semibold text-gray-500 mt-8 mb-4">More matches</h2>}
+                                <div className="flex flex-col md:flex-row">
+                                    {subList.map((event, index) => (
+                                        <Draggable
+                                            key={event._id}
+                                            draggableId={event._id}
+                                            index={index}>
+                                            {(provided, snapshot) => (
+                                                <div
+                                                    ref={provided.innerRef}
+                                                    {...provided.draggableProps}
+                                                    {...provided.dragHandleProps}
+                                                    // style={getItemStyle(
+                                                    //     snapshot.isDragging,
+                                                    //     provided.draggableProps.style
+                                                    // )}
+                                                    className="px-4"
+                                                    onClick={() => setModalEvent(event)}
+                                                >
+                                                    <EventCard event={event} wide={false} short={true}/>
+                                                </div>
+                                            )}
+                                        </Draggable>
+                                    ))}
+                                </div>
+                                {/* {provided.placeholder} */}
                             </div>
-                        </div>
-                    )}
-                </Droppable>
-                {preferredEvents && flatListToRenderedEvents(preferredEvents).map((subList, index) => <Droppable droppableId={`droppable-${index}`} direction="horizontal">
-                    {(provided, snapshot) => (
-                        <div
-                            ref={provided.innerRef}
-                            key={subList[0]._id}
-                            // style={getListStyle(snapshot.isDraggingOver)}
-                        >
-                            {index === 0 && <h2 className="raleway text-3xl font-semibold text-gray-500 mt-8 mb-4">More matches</h2>}
-                            <div className="flex flex-col md:flex-row">
-                                {subList.map((event, index) => (
-                                    <Draggable
-                                        key={event._id}
-                                        draggableId={event._id}
-                                        index={index}>
-                                        {(provided, snapshot) => (
-                                            <div
-                                                ref={provided.innerRef}
-                                                {...provided.draggableProps}
-                                                {...provided.dragHandleProps}
-                                                // style={getItemStyle(
-                                                //     snapshot.isDragging,
-                                                //     provided.draggableProps.style
-                                                // )}
-                                                className="px-4"
-                                                onClick={() => setModalEvent(event)}
-                                            >
-                                                <EventCard event={event} wide={false} short={true}/>
-                                            </div>
-                                        )}
-                                    </Draggable>
-                                ))}
-                            </div>
-                            {/* {provided.placeholder} */}
-                        </div>
-                    )}
-                </Droppable>)}                
-            </div></DragDropContext></div>
-            <p className="text-gray-400 text-sm mt-8">
-                Went through Tinder so fast that you forgot all the details of each event? 
-                If that's the case, I am pleased to inform you that you need not panic no more as you can click on an event anytime 
-                to bring back your dear details.
-            </p>
-            
-            <div className="mt-12">
+                        )}
+                    </Droppable>)}                
+                </div></DragDropContext></div>
+                <p className="text-gray-400 text-sm mt-8">
+                    Went through Tinder so fast that you forgot all the details of each event? 
+                    If that's the case, I am pleased to inform you that you need not panic no more as you can click on an event anytime 
+                    to bring back your dear details.
+                </p>
+                
+                <div className="mt-12">
                 <HandwrittenButton onClick={() => console.log("lol")} href="https://forms.gle/TKF2K5wZ2MWnwQuc7">Submit!</HandwrittenButton>
-                {/* <HandwrittenButton onClick={() => setIsSubmitting(true)} disabled={!preferredEvents}>Submit!</HandwrittenButton> */}
-            </div>
+                </div>
+                </> : <p>No events yet. Go to the <a className="hover:primary transition underline"><Link href="/app">tinder</Link></a> to match with some events!</p>
+            }
 
             {/* <Modal isOpen={!!modalEvent} onRequestClose={() => setModalEvent(null)}>
                 <div className="w-full flex justify-center">
@@ -295,6 +300,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         const sortedEvents = thisUser.preferredEvents.map(eventId => preferredEvents.find(
             e => e._id.toString() === eventId.toString())
         );
+
+        // confirm top3events are in preferredEvents
+        let x = thisUser.top3Events;
+        x = x.filter(y => thisUser.preferredEvents.includes(y));
+        if (x !== thisUser.top3Events) {
+            thisUser.top3Events = x;
+            await thisUser.save()
+        }
         
         return { props: { thisUser: cleanForJSON(thisUser), preferredEvents: cleanForJSON(sortedEvents) } } 
     } catch (e) {
