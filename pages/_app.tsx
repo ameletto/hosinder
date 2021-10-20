@@ -2,10 +2,10 @@ import { Provider } from "next-auth/client";
 import Router, { useRouter } from "next/router";
 import NProgress from "nprogress";
 import ReactModal from "react-modal";
+import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import "../styles/globals.css";
 import "../styles/nprogress.css";
-import Footer from "../components/Footer";
 
 Router.events.on("routeChangeStart", () => NProgress.start());
 Router.events.on("routeChangeComplete", () => NProgress.done());
@@ -19,7 +19,7 @@ export default function App({ Component, pageProps }) {
       <div id="app-root">
         <Component {...pageProps} />
       </div>
-      <Footer />
+      {!["/app"].includes(router.route) && <Footer />}
     </Provider>
   );
 }

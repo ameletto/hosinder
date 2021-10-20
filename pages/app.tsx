@@ -10,6 +10,7 @@ import useSWR, { SWRResponse } from "swr";
 import Button from "../components/Button";
 import Container from "../components/Container";
 import EventCard from "../components/EventCard";
+import Footer from "../components/Footer";
 import H1 from "../components/H1";
 import { UserModel } from "../models/User";
 import cleanForJSON from "../utils/cleanForJSON";
@@ -210,6 +211,7 @@ export default function App(props: { thisUser: DatedObj<UserObj> }) {
             </DragDropContext>
           </div>
           <p className="text-center mt-12 text-sm text-gray-400">Think you found your perfect event? <a className="underline transition hover:primary"><Link href="/dashboard">See your events.</Link></a></p>
+          <Footer/>
           </>
         ) : (
           <Checkpoint>
@@ -244,7 +246,10 @@ function Checkpoint({ children }) {
       className="md:absolute top-0 left-0 w-screen h-screen grid md:grid-cols-2 text-xl"
       style={{ zIndex: -20 }}
     >
+      <>
       {children}
+      <div className="fixed bottom-0"><Footer/></div>
+      </>
     </div>
   );
 }
