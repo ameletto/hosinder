@@ -91,7 +91,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 const thisObject = await EventModel.findById(req.body.id);
                 
                 if (!thisObject) return res.status(404);
-                if (thisObject.userId.toString() !== session.userId) return res.status(403);
+                // if (thisObject.userId.toString() !== session.userId) return res.status(403);
                 
                 await EventModel.deleteOne({_id: req.body.id});
                 
