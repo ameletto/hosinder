@@ -24,7 +24,7 @@ export default function Button({children, href, onClick, className, disabled}: B
 
     return href ? (
         <Link href={href}>
-            <a className={classNames}>{children}</a>
+            <div className={classNames + " cursor-pointer"}>{children}</div>
         </Link>
     ) : (
         <button className={classNames} onClick={onClick} disabled={disabled}>{children}</button>
