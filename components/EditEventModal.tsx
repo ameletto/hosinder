@@ -2,10 +2,8 @@ import axios from "axios";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Select from "react-select";
 import { DatedObj, EventObj } from "../utils/types";
-import { globalLabels } from "./EventCard";
-import H3 from "./H3";
+import { EventForm } from "./CreateEventModal";
 import HandwrittenButton from "./HandwrittenButton";
-import Input from "./Input";
 import Modal from "./Modal";
 
 const EditEventModal = ({isOpen, setIsOpen, allEvents, iter, setIter}: {
@@ -92,40 +90,17 @@ const EditEventModal = ({isOpen, setIsOpen, allEvents, iter, setIter}: {
                 isSearchable={true}
             />
             {!!eventID ? (
-                <>
-                <Input 
-                    type="text"
-                    name="Name"
-                    value={name}
-                    setValue={setName}
-                    placeholder="HOSA Bowl"
-                />            
-                <H3>Tags (optional)</H3>
-                <Select
-                    isMulti
-                    options = {Object.keys(globalLabels).map(k => ({value: k, label: globalLabels[k]}))}
-                    onChange={newSelectedOptions => setLabels(newSelectedOptions.map(option => option.value))}
-                    isDisabled={isLoading}
-                    // value={labels}
+                <EventForm 
+                    name={name}
+                    setName={setName}
+                    description={description}
+                    setDescription={setDescription}
+                    image={image}
+                    setImage={setImage}
+                    labels={labels}
+                    setLabels={setLabels}
+                    isLoading={isLoading}
                 />
-                <Input 
-                    type="textarea"
-                    name="Description (optional)"
-                    value={description}
-                    setValue={setDescription}
-                    placeholder="Unfortunately, this is not a bowl of HOSA swag."
-                />
-                <p className="text-gray-400 text-sm -mt-8">
-                    You can use markdown like **bold**, *italic*, [link text](https://your-url.com/), and ~~strikethrough~~. <a href="https://www.markdownguide.org/basic-syntax/" className="underline">Full markdown guide</a>
-                </p>
-                <Input 
-                    type="text"
-                    name="Image URL (optional)"
-                    value={image}
-                    setValue={setImage}
-                    placeholder="https://upload.wikimedia.org/wikipedia/en/d/dc/MGCI_Emblem2.png"
-                />
-                </>
             ) : <div className="mt-96"></div>}
             {error && (
                 <p className="text-red-500">{error}</p>
