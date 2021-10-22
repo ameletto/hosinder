@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Select from "react-select";
 import { DatedObj, EventObj } from "../utils/types";
+import { globalLabels } from "./EventCard";
 import H3 from "./H3";
 import HandwrittenButton from "./HandwrittenButton";
 import Input from "./Input";
@@ -102,27 +103,10 @@ const EditEventModal = ({isOpen, setIsOpen, allEvents, iter, setIter}: {
                 <H3>Tags (optional)</H3>
                 <Select
                     isMulti
-                    options = {[
-                        {
-                            label: "Individual",
-                            value: "individual"
-                        },
-                        {
-                            label: "Team",
-                            value: "team"
-                        },
-                        {
-                            label: "Knowledge test",
-                            value: "KT"
-                        },
-                        {
-                            label: "Skill performance",
-                            value: "skill"
-                        },
-                    ]}
+                    options = {Object.keys(globalLabels).map(k => ({value: k, label: globalLabels[k]}))}
                     onChange={newSelectedOptions => setLabels(newSelectedOptions.map(option => option.value))}
                     isDisabled={isLoading}
-                    className="w-full my-2 py-2"
+                    // value={labels}
                 />
                 <Input 
                     type="textarea"

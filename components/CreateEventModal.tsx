@@ -1,10 +1,11 @@
 import axios from "axios";
 import React, { Dispatch, SetStateAction, useState } from "react";
+import Select from "react-select";
+import { globalLabels } from "./EventCard";
+import H3 from "./H3";
 import HandwrittenButton from "./HandwrittenButton";
 import Input from "./Input";
 import Modal from "./Modal";
-import Select from "react-select";
-import H3 from "./H3";
 
 const CreateEventModal = ({isOpen, setIsOpen, schoolId, iter, setIter}: {
     isOpen: boolean,
@@ -69,24 +70,25 @@ const CreateEventModal = ({isOpen, setIsOpen, schoolId, iter, setIter}: {
             <H3>Tags (optional)</H3>
             <Select
                 isMulti
-                options = {[
-                    {
-                        label: "Individual",
-                        value: "individual"
-                    },
-                    {
-                        label: "Team",
-                        value: "team"
-                    },
-                    {
-                        label: "Knowledge test",
-                        value: "KT"
-                    },
-                    {
-                        label: "Skill performance",
-                        value: "skill"
-                    },
-                ]}
+                options = {Object.keys(globalLabels).map(k => ({value: k, label: globalLabels[k]}))}
+                // options = [
+                //     {
+                //         label: "Individual",
+                //         value: "individual"
+                //     },
+                //     {
+                //         label: "Team",
+                //         value: "team"
+                //     },
+                //     {
+                //         label: "Knowledge test",
+                //         value: "KT"
+                //     },
+                //     {
+                //         label: "Skill performance",
+                //         value: "skill"
+                //     },
+                // ]
                 onChange={newSelectedOptions => setLabels(newSelectedOptions.map(option => option.value))}
                 isDisabled={isLoading}
                 className="w-full my-2 py-2"
