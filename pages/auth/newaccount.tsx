@@ -9,13 +9,12 @@ import useSWR, { SWRResponse } from "swr";
 import Container from "../../components/Container";
 import CuteGradientCircle from "../../components/CuteGradientCircle";
 import H1 from "../../components/H1";
-import H2 from "../../components/H2";
 import HandwrittenButton from "../../components/HandwrittenButton";
 import SEO from "../../components/SEO";
 import { UserModel } from "../../models/User";
 import dbConnect from "../../utils/dbConnect";
 import fetcher from "../../utils/fetcher";
-import { DatedObj, EventObj, SchoolObj } from "../../utils/types";
+import { DatedObj, EventObj } from "../../utils/types";
 
 export default function NewAccount({ }: {}) {
     const router = useRouter();
@@ -57,16 +56,19 @@ export default function NewAccount({ }: {}) {
         setError(null);
     }
 
+    const teamLabels = ["individual", "team"]
+    const eventTypeLabels = ["KT", "skill",  "submission"]
+
     const onLabelChange = (label, clear = false) => {
         let newLabels;
         if (clear) {
             // todo clearning doesn tfully work
             console.log("clearing")
-            if (label === "individual" || label === "team") newLabels = labels.filter(l => l !== "individual" && l !== "team");
-            else if (label === "KT" || label === "skill") newLabels = labels.filter(l => l !== "KT" && l !== "skill");
+            if (teamLabels.includes(label)) newLabels = labels.filter(l => !teamLabels.includes(l));
+            else if (eventTypeLabels.includes(label)) newLabels = labels.filter(l => !eventTypeLabels.includes(l));
         } else { 
-            if (label === "individual" || label === "team") newLabels = [...labels.filter(l => l !== "individual" && l !== "team"), label];
-            else if (label === "KT" || label === "skill") newLabels = [...labels.filter(l => l !== "KT" && l !== "skill"), label];
+            if (teamLabels.includes(label)) newLabels = [...labels.filter(l => !teamLabels.includes(l)), label];
+            else if (eventTypeLabels.includes(label)) newLabels = [...labels.filter(l => !eventTypeLabels.includes(l)), label];
             // else setLabels([...labels, label]);
         }
         console.log(newLabels)
@@ -182,7 +184,7 @@ export default function NewAccount({ }: {}) {
                         {value: "team", label: "Team events"},
                         {value: "individual", label: "Individual events"},
                     ]}
-                    onChange={option => onLabelChange(option ? option.value : "Team events", !option)}
+                    onChange={option => onLabelChange(option ? option.value : "team", !option)}
                     isDisabled={isLoading}
                     isClearable={true}
                     className="font-normal w-full md:flex-grow"
@@ -197,11 +199,12 @@ export default function NewAccount({ }: {}) {
             </CustomSectionComponent>
 
             <CustomSectionComponent>
-                <CustomLabelComponent>Do you prefer knowledge tests or skill performances (optional):</CustomLabelComponent>
+                <CustomLabelComponent>Do you prefer knowledge tests, skill performances, or submissions that are prepared in advance? (optional):</CustomLabelComponent>
                 <Select 
                     options={[
                         {value: "KT", label: "Knowledge tests"},
-                        {value: "skill", label: "Skill performances"},
+                        {value: "skill", label: "Skill performance (roleplays)"},
+                        {value: "submission", label: "Submissions (prepared in advance)"},
                     ]}
                     onChange={option => onLabelChange(option ? option.value : "KT", !option)}
                     isDisabled={isLoading}
