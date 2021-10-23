@@ -20,7 +20,7 @@ import { UserModel } from "../models/User";
 import cleanForJSON from "../utils/cleanForJSON";
 import dbConnect from "../utils/dbConnect";
 import fetcher from "../utils/fetcher";
-import { DatedObj, SchoolObj, SchoolObjGraph, UserObj } from "../utils/types";
+import { DatedObj, EventObj, SchoolObj, SchoolObjGraph, UserObj } from "../utils/types";
 
 const admin = (props: { thisUser: DatedObj<UserObj>, thisSchool: DatedObj<SchoolObj> }) => {
     const [isCreateEvent, setIsCreateEvent] = useState<boolean>(false);
@@ -31,6 +31,7 @@ const admin = (props: { thisUser: DatedObj<UserObj>, thisSchool: DatedObj<School
     const [newAdmins, setNewAdmins] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>(null);
+    const [modalEvent, setModalEvent] = useState<DatedObj<EventObj>>(null);
     
     const {data: schoolData, error: schoolError}: SWRResponse<{data: DatedObj<SchoolObjGraph>}, any> = useSWR(`/api/school?id=${props.thisSchool._id}&iter=${iter}`, fetcher);
     const {data: studentsData, error: studentsError}: SWRResponse<{data: DatedObj<UserObj>[]}, any> = useSWR(`/api/user?school=${props.thisSchool._id}&removeAdmins=${true}`, fetcher);
@@ -66,9 +67,9 @@ const admin = (props: { thisUser: DatedObj<UserObj>, thisSchool: DatedObj<School
             <H1 className="text-center">{props.thisSchool.name}</H1>
             <p>{props.thisSchool.description}</p>
 
-            <div className="my-8">
-                <div className="flex">
-                    <H2 className="mb-4">All events:</H2>
+            <div className="my-12">
+                <div className="flex mb-1">
+                    <H2>All events:</H2>
 
                     <div className="flex ml-auto">
                         <HandwrittenButton onClick={() => setIsCreateEvent(true)} arrowRightOnHover={false}>
@@ -92,16 +93,23 @@ const admin = (props: { thisUser: DatedObj<UserObj>, thisSchool: DatedObj<School
                 <EditEventModal isOpen={isEditEvent} setIsOpen={setIsEditEvent} allEvents={schoolData && schoolData.data ? schoolData.data.eventsArr : []} iter={iter} setIter={setIter}/>
                 <DeleteEventModal isOpen={isDeleteEvent} setIsOpen={setIsDeleteEvent} schoolId={props.thisSchool._id} iter={iter} setIter={setIter} eventData={(schoolData && schoolData.data) ? schoolData.data.eventsArr : []}/>
                 <div className="flex gap-8 flex-wrap overflow-hidden">
-                    {(schoolData && schoolData.data) && schoolData.data.eventsArr.length > 0 ? schoolData.data.eventsArr.map(event => (
-                        // Grid of events
-                        <EventCard event={event} wide={false}/>
-                    )) : <p>No events yet. Create an event so your students can start tinder-matching themselves to 'em ;)</p>}
+                    {(schoolData && schoolData.data) && schoolData.data.eventsArr.length > 0 ? (
+                        <>
+                        <p className="text-gray-400 text-sm w-full">Click on an event to see its full description.</p>
+                        {schoolData.data.eventsArr.map(event => (
+                            // Grid of events
+                            <div onClick={() => setModalEvent(event)} className="cursor-pointer">
+                                <EventCard event={event} wide={false}/>
+                            </div>
+                        ))}
+                        </>
+                    ) : <p>No events yet. Create an event so your students can start tinder-matching themselves to 'em ;)</p>}
                 </div>
             </div>
 
             <div>
-                <div className="flex">
-                    <H2 className="mb-4">{`${props.thisSchool.name}'s admins:`}</H2>
+                <div className="flex mb-1">
+                    <H2>{`${props.thisSchool.name}'s admins:`}</H2>
                     <div className="ml-auto">
                         <HandwrittenButton onClick={() => setIsAddAdmin(true)} arrowRightOnHover={false}>
                             <div className="flex items-center">
@@ -110,10 +118,11 @@ const admin = (props: { thisUser: DatedObj<UserObj>, thisSchool: DatedObj<School
                         </HandwrittenButton>
                     </div>
                 </div>
+                <p className="text-gray-400 text-sm mb-4">Admins can add, edit, and delete events.</p>
                 <div className="flex gap-4">
                     {schoolData && schoolData.data && schoolData.data.adminsArr.map(user => (
                         // TODO: click on user -> popup with more info?
-                        <div className="flex justify-center p-4 oswald font-bold rounded-md transition border border-transparent hover:border-gray-400" key={user._id}>
+                        <div className="flex justify-center p-4 font-bold rounded-md transition border border-transparent hover:border-gray-400" key={user._id}>
                             <img
                                 src={user.image}
                                 alt={`Profile picture of ${user.name}`}
@@ -127,6 +136,7 @@ const admin = (props: { thisUser: DatedObj<UserObj>, thisSchool: DatedObj<School
                     ))}
                 </div>
             </div>
+
             <Modal isOpen={isAddAdmin} onRequestClose={() => setIsAddAdmin(false)}>
                 <H2 className="mb-2">Add admin</H2>
                 <p className="mb-4">Here is everyone that goes to {props.thisSchool.name}:</p>
@@ -144,6 +154,11 @@ const admin = (props: { thisUser: DatedObj<UserObj>, thisSchool: DatedObj<School
                     <p className="text-red-500">{error}</p>
                 )}
                 <div className="mt-96 mb-2"><HandwrittenButton onClick={onAddAdmin} py={3}>Add</HandwrittenButton></div>
+            </Modal>
+            <Modal isOpen={!!modalEvent} onRequestClose={() => setModalEvent(null)}>
+                <div className="w-full flex justify-center">
+                    {modalEvent && <EventCard event={modalEvent}/>}
+                </div>
             </Modal>
 
         </Container>

@@ -22,7 +22,7 @@ const EventCard = ({event, wide=true, short=false} : {event: DatedObj<EventObj>,
         extensions: [showdownHtmlEscape],
     });
     return (
-        <div className={`border-dashed border-black rounded-lg raleway p-4 bg-white ${wide ? "w-96 md:w-150" : "w-72"} ${short && "h-36 overflow-y-hidden"}`} style={{borderWidth: wide ? 6 : 4}}>
+        <div className={`border-dashed border-black rounded-lg raleway p-4 bg-white ${wide ? "w-96 md:w-150" : `w-72 overflow-y-hidden ${short ? "h-36" : "h-96"}`}`} style={{borderWidth: wide ? 6 : 4}}>
             <p className="text-center mx-4 mt-4 font-bold" style={{fontSize: wide ? 40 : 20}}>{event.name}</p>
             <div className="flex">
                 {event.labels && event.labels.map((label, index) => <p 
