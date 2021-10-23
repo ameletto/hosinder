@@ -162,7 +162,7 @@ export default function dashboard(props: { thisUser: DatedObj<UserObj>, preferre
             <Confetti
                 width={width}
                 height={height}
-                tweenDuration={5}
+                recycle={false}
                 colors={['#B6E2FC','#D4D0FD']}
             />
             <SEO />
