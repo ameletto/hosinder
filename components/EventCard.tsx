@@ -1,7 +1,16 @@
-import { DatedObj, EventObj, SchoolObj } from "../utils/types";
+import Parser from "html-react-parser";
 import showdown from "showdown";
 import showdownHtmlEscape from "showdown-htmlescape";
-import Parser from "html-react-parser";
+import { DatedObj, EventObj } from "../utils/types";
+
+export const globalLabels = {
+    // Maps database value to displayed value.
+    KT: "Knowledge test",
+    skill: "Skill performance (roleplay)",
+    submission: "Submission (prepared in advance)",
+    individual: "Individual",
+    team: "Team",
+} 
 
 const EventCard = ({event, wide=true, short=false} : {event: DatedObj<EventObj>, wide?: boolean, short?: boolean}) => {
     const markdownConverter = new showdown.Converter({
@@ -20,11 +29,11 @@ const EventCard = ({event, wide=true, short=false} : {event: DatedObj<EventObj>,
                     key={label} 
                     className={`text-center p-2 text-sm m-2 border-2 rounded-full ${index % 2 === 0 ? "border-primary" : "border-secondary"}`}
                 >
-                    {label == "KT" ? "knowledge test" : label}
+                    {globalLabels[label]}
                 </p>)}
             </div>
             {event.image && <img src={event.image} alt={`Image of ${event.name}`}/>}
-            {event.description && <div className={`p-4 raleway ${wide && "text-xl"}`}>{Parser(markdownConverter.makeHtml(event.description))}</div>}
+            {event.description && <div className={`prose p-4 raleway ${wide && "text-xl"}`}>{Parser(markdownConverter.makeHtml(event.description))}</div>}
         </div>
     )
 }

@@ -5,6 +5,7 @@ import ReactModal from "react-modal";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import "../styles/globals.css";
+import "../styles/markdown.css";
 import "../styles/nprogress.css";
 
 Router.events.on("routeChangeStart", () => NProgress.start());

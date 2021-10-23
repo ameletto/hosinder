@@ -1,11 +1,10 @@
 import axios from "axios";
 import React, { Dispatch, SetStateAction, useState } from "react";
-import HandwrittenButton from "./HandwrittenButton";
-import Input from "./Input";
-import Modal from "./Modal";
 import Select from "react-select";
-import H3 from "./H3";
 import { DatedObj, EventObj } from "../utils/types";
+import H3 from "./H3";
+import HandwrittenButton from "./HandwrittenButton";
+import Modal from "./Modal";
 
 const DeleteEventModal = ({ isOpen, setIsOpen, schoolId, iter, setIter, eventData }: {
     isOpen: boolean,
@@ -38,13 +37,6 @@ const DeleteEventModal = ({ isOpen, setIsOpen, schoolId, iter, setIter, eventDat
             isOpen={isOpen}
             onRequestClose={() => setIsOpen(false)}
         >
-            <Input
-                type="text"
-                name="Name"
-                value={name}
-                setValue={setName}
-                placeholder="HOSA Bowl"
-            />
             <H3>Name of event</H3>
             <Select
                 options={
@@ -53,9 +45,10 @@ const DeleteEventModal = ({ isOpen, setIsOpen, schoolId, iter, setIter, eventDat
                         label: urdad.name,
                     })) : []
                 }
-            onChange={option => setName(option.value)}
-            isDisabled={isLoading}
-            className="w-full mt-4 mb-96"
+                onChange={option => setName(option.value)}
+                isDisabled={isLoading}
+                className="w-full mt-4 mb-96"
+                isSearchable={true}
             />
             {error && (
                 <p className="text-red-500">{error}</p>

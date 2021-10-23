@@ -8,7 +8,6 @@ import { FaArrowLeft } from 'react-icons/fa';
 import Container from '../components/Container';
 import EventCard from '../components/EventCard';
 import H1 from '../components/H1';
-import H3 from '../components/H3';
 import HandwrittenButton from '../components/HandwrittenButton';
 import InlineButton from '../components/InlineButton';
 import Modal from '../components/Modal';
@@ -18,8 +17,8 @@ import { UserModel } from '../models/User';
 import cleanForJSON from '../utils/cleanForJSON';
 import dbConnect from '../utils/dbConnect';
 import { DatedObj, EventObj, UserObj } from '../utils/types';
-import useWindowSize from 'react-use/lib/useWindowSize'
-import Confetti from 'react-confetti'
+import useWindowSize from 'react-use/lib/useWindowSize';
+import Confetti from 'react-confetti';
 
 // a little function to help us with reordering the result
 const reorder = (list: DatedObj<EventObj>[], startIndex, endIndex): DatedObj<EventObj>[] => {
@@ -68,10 +67,10 @@ const renderedEventsToFlatList = (list: DatedObj<EventObj>[][]): DatedObj<EventO
 }
 
 export default function dashboard(props: { thisUser: DatedObj<UserObj>, preferredEvents: DatedObj<EventObj>[] }) {
-    const [preferredEvents, setPreferredEvents] = useState<DatedObj<EventObj>[]>(props.preferredEvents.length > 0 ? props.preferredEvents.filter(event => !props.thisUser.top3Events.includes(event._id)) : []);
+    const [preferredEvents, setPreferredEvents] = useState<DatedObj<EventObj>[]>(props.preferredEvents.length > 0 ? props.preferredEvents.filter(event => (event && event._id) ? !props.thisUser.top3Events.includes(event._id) : false) : []);
     // preferred events doesn't contain top 3 events.
 
-    const [top3Events, setTop3Events] = useState<DatedObj<EventObj>[]>(props.thisUser.top3Events.map(e => props.preferredEvents.find(event => e === event._id)) || []);
+    const [top3Events, setTop3Events] = useState<DatedObj<EventObj>[]>(props.thisUser.top3Events.map(e => props.preferredEvents.find(event => (event && event._id) ? e === event._id : false)) || []);
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [modalEvent, setModalEvent] = useState<DatedObj<EventObj>>(null);
@@ -157,9 +156,15 @@ export default function dashboard(props: { thisUser: DatedObj<UserObj>, preferre
             .catch(e => { console.log(e) })
             .finally(() => setIsLoading(false));
     }
-
+    const {width, height} = useWindowSize()
     return (
         <Container className="max-w-5xl">
+            <Confetti
+                width={width}
+                height={height}
+                tweenDuration={5}
+                colors={['#B6E2FC','#D4D0FD']}
+            />
             <SEO />
             <InlineButton href="/app"><div className="flex items-center"><FaArrowLeft /><span className="ml-2">Back to Tinder</span></div></InlineButton>
             <div className="mb-12">
@@ -207,6 +212,7 @@ export default function dashboard(props: { thisUser: DatedObj<UserObj>, preferre
                                     </div>
                                 </div>
                             )}
+
                         </Droppable>
                         {preferredEvents && flatListToRenderedEvents(preferredEvents).map((subList, index) => <Droppable droppableId={`droppable-${index}`} direction="horizontal">
                             {(provided, snapshot) => (
@@ -254,23 +260,14 @@ export default function dashboard(props: { thisUser: DatedObj<UserObj>, preferre
                     <div className="mt-12">
                         <HandwrittenButton onClick={() => console.log("lol")} href="https://forms.gle/TKF2K5wZ2MWnwQuc7">Submit!</HandwrittenButton>
                     </div>
-                </> : <p>No events yet. Go to the <a className="hover:primary transition underline"><Link href="/app">tinder</Link></a> to match with some events!</p>
-            }
+                </> : <p>No events yet. Go to the <a className="hover:primary transition underline"><Link href="/app">tinder</Link></a> to match with some events!</p>}
 
-            const {width, height} = useWindowSize()
-            return (
-            <Confetti
-                width={width}
-                height={height}
-            />
-            )
-
-            {/* <Modal isOpen={!!modalEvent} onRequestClose={() => setModalEvent(null)}>
+            <Modal isOpen={!!modalEvent} onRequestClose={() => setModalEvent(null)}>
                 <div className="w-full flex justify-center">
-                    {modalEvent && <EventCard event={modalEvent}/>}
+                    {modalEvent && <EventCard event={modalEvent} />}
                 </div>
             </Modal>
-            <Modal isOpen={isSubmitting} onRequestClose={() => setIsSubmitting(false)}>
+            {/* <Modal isOpen={isSubmitting} onRequestClose={() => setIsSubmitting(false)}>
                 <H3 className="mb-2">Submit top 3 events</H3>
                 <p>Are you sure you want to submit your events? Please confirm you are 100% sure about your top 3 choices:</p>
                 <ul className="my-4 text-gray-500">

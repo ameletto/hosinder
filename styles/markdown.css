@@ -1,0 +1,16 @@
+.prose p {
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+}
+
+.prose a {
+    text-decoration: underline
+}
+
+.prose li {
+    list-style-type: disc;
+}
+
+.prose ul {
+    margin-left: 1.25rem;
+}
