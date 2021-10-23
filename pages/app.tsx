@@ -34,7 +34,7 @@ export default function App(props: { thisUser: DatedObj<UserObj> }) {
     fetcher
   );
   const [i, setI] = useState<number>(
-    props.thisUser.notWantedEvents.length + props.thisUser.preferredEvents.length || 0
+    props.thisUser.alreadySwipedEvents.length || 0
   );
   const [isPaused, setIsPaused] = useState<boolean>(false);
   useEffect(() => {
@@ -48,13 +48,13 @@ export default function App(props: { thisUser: DatedObj<UserObj> }) {
           ...props.thisUser.preferredEvents.filter((e) => e !== eventId),
           eventId,
         ],
-        notWantedEvents: props.thisUser.preferredEvents.filter((e) => e !== eventId),
+        alreadySwipedEvents: [...props.thisUser.alreadySwipedEvents, eventId],
       })
       .then((res) => {
         if (res.data.error) console.log("you are a failure ", res.data.error);
         else {
           props.thisUser.preferredEvents = res.data.user.preferredEvents;
-          props.thisUser.notWantedEvents = res.data.user.notWantedEvents;
+          props.thisUser.alreadySwipedEvents = res.data.user.alreadySwipedEvents;
           setI(i + 1);
         }
       })
@@ -65,16 +65,13 @@ export default function App(props: { thisUser: DatedObj<UserObj> }) {
     axios
       .post("/api/user", {
         preferredEvents: props.thisUser.preferredEvents.filter((e) => e !== eventId),
-        notWantedEvents: [
-          ...props.thisUser.notWantedEvents.filter((e) => e !== eventId),
-          eventId,
-        ],
+        alreadySwipedEvents: [...props.thisUser.alreadySwipedEvents, eventId],
       })
       .then((res) => {
         if (res.data.error) console.log("you are a failure ", res.data.error);
         else {
           props.thisUser.preferredEvents = res.data.user.preferredEvents;
-          props.thisUser.notWantedEvents = res.data.user.notWantedEvents;
+          props.thisUser.alreadySwipedEvents = res.data.user.alreadySwipedEvents;
           setI(i + 1);
         }
       })
@@ -226,7 +223,20 @@ export default function App(props: { thisUser: DatedObj<UserObj> }) {
               </p>
             </Button>
             <Button
-              onClick={() => setI(0)}
+              onClick={() => {
+                // clear thisUser.alreadySwipedEvents
+                axios.post("/api/user", {
+                  alreadySwipedEvents: [],
+                })
+                .then((res) => {
+                  if (res.data.error) console.log("you are a failure ", res.data.error);
+                  else {
+                    props.thisUser.alreadySwipedEvents = res.data.user.alreadySwipedEvents;
+                    setI(0);
+                  }
+                })
+                .catch((e) => console.log(e));
+              }}
               className="hover:bg-primary flex items-center justify-center"
             >
               <p className="border-2 border-black rounded-3xl p-8">
@@ -265,6 +275,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     await dbConnect();
     const thisUser = await UserModel.findOne({ email: session.user.email });
     // const thisSchool = thisUser.school ? await SchoolModel.findOne({ _id: thisUser.school }) : await SchoolModel.findOne({ name: 'Marc Garneau Collegiate Institute' })
+    
+    if (!thisUser.alreadySwipedEvents) {
+      thisUser.alreadySwipedEvents = [];
+      await thisUser.save();
+    }
+    
     return thisUser
       ? { props: { thisUser: cleanForJSON(thisUser) } }
       : { redirect: { permanent: false, destination: "/auth/welcome" } };

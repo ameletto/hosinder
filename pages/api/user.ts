@@ -46,7 +46,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         case "POST": {
             const session = await getSession({req});
             if (!session) return res.status(403).send("Unauthed");
-            if (!(req.body.grade || req.body.school || req.body.preferredEvents || req.body.notWantedEvents || req.body.top3Events)) return res.status(406).send("Missing grade or school");
+            if (!(req.body.grade || req.body.school || req.body.preferredEvents || req.body.alreadySwipedEvents || req.body.top3Events)) return res.status(406).send("Missing grade or school");
             
             try {
                 await dbConnect();
@@ -56,7 +56,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 if (req.body.school) user.school = req.body.school
                 if (req.body.preferredEvents) user.preferredEvents = req.body.preferredEvents
                 if (req.body.preferredEvents) user.markModified("preferredEvents");
-                if (req.body.notWantedEvents) user.notWantedEvents = req.body.notWantedEvents
+                if (req.body.alreadySwipedEvents) user.alreadySwipedEvents = req.body.alreadySwipedEvents
                 if (req.body.top3Events) user.top3Events = req.body.top3Events
 
                 await user.save();

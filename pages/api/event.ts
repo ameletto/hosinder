@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/client";
 import { EventModel } from "../../models/Event";
+import { UserModel } from "../../models/User";
 import dbConnect from "../../utils/dbConnect";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -30,7 +31,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 
                 if (!thisObject || !thisObject.length) return res.status(404);
                 
-                return res.status(200).json({data: thisObject});
+                const thisUser = await UserModel.findOne({email: session.user.email});
+                if (!req.query.school || !thisUser.labels || thisUser.labels.length === 0) return res.status(200).json({data: thisObject});
+
+                let sortedEvents = []
+                if (thisUser.labels.length === 1) {
+                    for (var event of thisObject) {
+                        if (event.labels.includes(thisUser.labels[0])) sortedEvents.push(event)
+                    }
+                    for (var event of thisObject) {
+                        if (!(event.labels.includes(thisUser.labels[0]))) sortedEvents.push(event)
+                    }
+                } else {
+                    for (var event of thisObject) {
+                        if (event.labels.includes(thisUser.labels[0]) && event.labels.includes(thisUser.labels[1])) sortedEvents.push(event)
+                    }
+                    for (var event of thisObject) {
+                        if ((event.labels.includes(thisUser.labels[0]) || event.labels.includes(thisUser.labels[1])) && !(event.labels.includes(thisUser.labels[0]) && event.labels.includes(thisUser.labels[1]))) sortedEvents.push(event)
+                    }
+                    for (var event of thisObject) {
+                        if (!event.labels.includes(thisUser.labels[0]) && !event.labels.includes(thisUser.labels[1])) sortedEvents.push(event)
+                    }
+                }
+                return res.status(200).json({data: sortedEvents});
             } catch (e) {
                 return res.status(500).json({message: e});                        
             }

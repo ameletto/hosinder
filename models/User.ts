@@ -1,4 +1,4 @@
-import mongoose, { Document, Model } from "mongoose";
+import mongoose, { Model } from "mongoose";
 import { DatedObj, UserObj } from "../utils/types";
 
 const UserSchema = new mongoose.Schema({
@@ -10,7 +10,7 @@ const UserSchema = new mongoose.Schema({
     labels: { required: false, type: [String] },
     previousEvents: { required: false, type: [mongoose.Schema.Types.ObjectId] },
     preferredEvents: { required: false, type: [mongoose.Schema.Types.ObjectId] },
-    notWantedEvents: { required: false, type: [mongoose.Schema.Types.ObjectId] },
+    alreadySwipedEvents: { required: false, type: [mongoose.Schema.Types.ObjectId] },
     top3Events: {required: false, type: [mongoose.Schema.Types.ObjectId]}, // top3Events includes preferredEvents and are in order.
 }, {
     timestamps: true,

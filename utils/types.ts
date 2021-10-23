@@ -7,7 +7,7 @@ export interface UserObj {
     labels?: string[],
     previousEvents?: string[], // Object ID
     preferredEvents?: string[], // Object ID
-    notWantedEvents?: string[], // Object ID
+    alreadySwipedEvents?: string[], // Object ID
     top3Events?: string[], // Object ID
 }
 
