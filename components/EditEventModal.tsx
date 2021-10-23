@@ -50,14 +50,7 @@ const EditEventModal = ({isOpen, setIsOpen, allEvents, iter, setIter}: {
                 console.log(res.data);
                 setIter(iter + 1);
                 setIsLoading(false);
-
-                // Reset
-                setName("");
-                setDescription("");
-                setImage("");
-                setLabels([]);
-                setIsOpen(false);
-                setEventID("");
+                closeModal();
             }
         }).catch(e => {
             setIsLoading(false);
@@ -66,18 +59,20 @@ const EditEventModal = ({isOpen, setIsOpen, allEvents, iter, setIter}: {
         });
     }
 
+    function closeModal() {
+        setIsOpen(false)
+        // Reset
+        setName("");
+        setDescription("");
+        setImage("");
+        setLabels([]);
+        setEventID("");
+    }
+
     return (
         <Modal
             isOpen={isOpen}
-            onRequestClose={() => {
-                setIsOpen(false)
-                // Reset
-                setName("");
-                setDescription("");
-                setImage("");
-                setLabels([]);
-                setEventID("");
-            }}
+            onRequestClose={closeModal}
         >
             <Select 
                 options={allEvents && allEvents && allEvents.map(s => ({

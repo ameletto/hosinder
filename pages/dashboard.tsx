@@ -10,6 +10,7 @@ import EventCard from '../components/EventCard';
 import H1 from '../components/H1';
 import HandwrittenButton from '../components/HandwrittenButton';
 import InlineButton from '../components/InlineButton';
+import Modal from '../components/Modal';
 import SEO from '../components/SEO';
 import { EventModel } from '../models/Event';
 import { UserModel } from '../models/User';
@@ -254,12 +255,12 @@ export default function dashboard(props: {thisUser: DatedObj<UserObj>, preferred
                 </> : <p>No events yet. Go to the <a className="hover:primary transition underline"><Link href="/app">tinder</Link></a> to match with some events!</p>
             }
 
-            {/* <Modal isOpen={!!modalEvent} onRequestClose={() => setModalEvent(null)}>
+            <Modal isOpen={!!modalEvent} onRequestClose={() => setModalEvent(null)}>
                 <div className="w-full flex justify-center">
                     {modalEvent && <EventCard event={modalEvent}/>}
                 </div>
             </Modal>
-            <Modal isOpen={isSubmitting} onRequestClose={() => setIsSubmitting(false)}>
+            {/* <Modal isOpen={isSubmitting} onRequestClose={() => setIsSubmitting(false)}>
                 <H3 className="mb-2">Submit top 3 events</H3>
                 <p>Are you sure you want to submit your events? Please confirm you are 100% sure about your top 3 choices:</p>
                 <ul className="my-4 text-gray-500">
