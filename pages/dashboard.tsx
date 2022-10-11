@@ -258,7 +258,7 @@ export default function dashboard(props: { thisUser: DatedObj<UserObj>, preferre
                     </p>
 
                     <div className="mt-12">
-                        <HandwrittenButton onClick={() => console.log("lol")} href="https://forms.gle/TKF2K5wZ2MWnwQuc7">Submit!</HandwrittenButton>
+                        <HandwrittenButton onClick={() => console.log("lol")} href="https://forms.gle/LnWFLRdFk6HHto2AA">Submit!</HandwrittenButton>
                     </div>
                 </> : <p>No events yet. Go to the <a className="hover:primary transition underline"><Link href="/app">tinder</Link></a> to match with some events!</p>}
 
